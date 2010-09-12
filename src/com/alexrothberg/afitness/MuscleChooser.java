@@ -1,0 +1,121 @@
+package com.alexrothberg.afitness;
+
+import android.app.ListActivity;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.database.MergeCursor;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+
+import com.alexrothberg.afitness.DbAdapter.MuscleGroups;
+import com.alexrothberg.afitness.DbAdapter.Muscles;
+
+public class MuscleChooser extends ListActivity {
+	private static final String TAG = "ExerciseMuscleChooser";
+
+	private long muscleGroupId;
+	private String muscleGroup;
+	private Bundle extras;
+	
+	private DbAdapter adapter;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		adapter = new DbAdapter(this);
+		adapter.open();
+		
+		extras = getIntent().getExtras();
+		
+		Cursor muscles = null;
+		if (extras != null){
+			muscleGroupId = extras.getLong("MuscleGroups:" + MuscleGroups._ID);
+			muscleGroup = extras.getString("MuscleGroups:" + MuscleGroups.KEY_NAME);
+			setTitle("Muscles for " + muscleGroup);
+			
+			Log.v(TAG, "fetching muscles for " + muscleGroup + "(" + muscleGroupId + ")");
+			muscles = adapter.fetchMusclesForMuscleGroup(muscleGroupId);
+		}else{
+			muscles = adapter.fetchAllMuscles();
+			setTitle("All Muscles");			
+		}
+		
+		Cursor combined = null;
+		MatrixCursor extraMusclesItems = new MatrixCursor(new String[] { Muscles._ID, Muscles.KEY_NAME});
+		if (muscleGroup != null){
+			extraMusclesItems.addRow(new Object[] {0, "All " + muscleGroup  +" Exercises"});
+			combined = new MergeCursor(new Cursor[]{extraMusclesItems, muscles});
+		}else{
+			extraMusclesItems.addRow(new Object[] {0, "All Exercises"});
+			combined = new MergeCursor(new Cursor[]{extraMusclesItems, muscles});
+		}
+		startManagingCursor(combined);
+
+		String[] from = { Muscles.KEY_NAME };
+		int[] to = { R.id.std_list_item_name_txt };
+		
+		setListAdapter(new ColorSpecial(this, R.layout.std_list_item, combined, from, to));
+	}
+	
+    @Override
+    protected void onDestroy() {
+    	super.onDestroy();
+    	adapter.close();
+    }
+
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+			
+        Cursor cursor = (Cursor) getListAdapter().getItem(position);
+        if (cursor == null) {
+            // For some reason the requested item isn't available, do nothing
+            return;
+        }
+        Intent i = new Intent(this, ActivityList.class);
+        if(extras != null)
+        	i.putExtras(extras);
+        
+        if(id>0){
+        	String muscle = cursor.getString(cursor.getColumnIndex(Muscles.KEY_NAME));
+	        i.putExtra("Muscles:" + Muscles._ID, id);
+	        i.putExtra("Muscles:" + Muscles.KEY_NAME, muscle);
+        }
+        
+        startActivity(i);	
+	}
+	
+	protected class ColorSpecial extends SimpleCursorAdapter{
+		public ColorSpecial(Context context, int layout, Cursor c,
+				String[] from, int[] to) {
+			super(context, layout, c, from, to);
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			View ret = super.getView(position, convertView, parent);
+			Cursor cursor = (Cursor) getItem( position);
+			long id = cursor.getLong(cursor.getColumnIndex(MuscleGroups._ID));
+			if (id == 0){
+	        	ret.setBackgroundResource(R.color.red);
+	        }else{
+	        	ret.setBackgroundColor(android.R.color.transparent);
+	        }
+			return ret;
+		}
+	}
+
+
+}

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <LinearLayout android:orientation="horizontal" android:layout_height="wrap_content" android:layout_width="fill_parent" android:padding="3px">
+        <LinearLayout android:id="@+id/recordBox" android:background="#0000aa" android:orientation="vertical" android:layout_height="wrap_content"
+            android:layout_width="fill_parent" android:layout_weight="1">
+            <LinearLayout android:orientation="horizontal" android:layout_height="wrap_content" android:layout_width="fill_parent">
+                <LinearLayout android:orientation="vertical" android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_weight="1">
+                    <TextView android:id="@+id/repsLbl" android:text="repetitions" android:layout_height="wrap_content" android:layout_width="fill_parent" />
+                    <EditText android:id="@+id/repsEntryTxt" android:layout_height="wrap_content" android:layout_width="fill_parent" android:inputType="number"  />
+                </LinearLayout>
+                <LinearLayout android:orientation="vertical" android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_weight="1">
+                    <TextView android:id="@+id/weightLbl" android:text="weight" android:layout_height="wrap_content" android:layout_width="fill_parent" />
+                    <LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent" android:orientation="horizontal">
+                   		<EditText android:id="@+id/weightEntryTxt" android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_weight="1" android:gravity="bottom" android:inputType="numberDecimal|number" />
+                   		<TextView android:text="lbs" android:layout_height="wrap_content" android:layout_width="wrap_content" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+            <TextView android:id="@+id/notesLbl" android:text="notes (optional)" android:layout_height="wrap_content" android:layout_width="fill_parent" />
+            <EditText android:id="@+id/notesTxt" android:layout_height="wrap_content" android:layout_width="fill_parent" android:inputType="text" />
+            <Button android:id="@+id/recordBtn" android:text="Record" android:layout_height="wrap_content" android:layout_width="fill_parent" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/buttonBox" android:orientation="vertical" android:layout_height="fill_parent" android:layout_width="wrap_content">
+            <ImageButton android:id="@+id/restTimerBtn" android:layout_gravity="center" android:background="@android:color/transparent"
+                android:layout_weight="1" android:padding="10px" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/clock"
+                android:scaleType="centerInside" android:adjustViewBounds="true" />
+            <FrameLayout android:layout_weight="1" android:padding="10px" android:layout_width="wrap_content" android:layout_height="wrap_content">
+                <ImageButton android:id="@+id/recordDatebtn" android:background="@android:color/transparent" android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" android:src="@drawable/calendar_icon" android:scaleType="centerInside" android:adjustViewBounds="true" />
+            </FrameLayout>
+            <ImageButton android:id="@+id/historyBtn" android:padding="10px" android:background="@android:color/transparent" android:layout_weight="1"
+                android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/history" android:scaleType="fitCenter"
+                android:adjustViewBounds="true" />
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent" android:orientation="horizontal" android:background="#D1D1D1">
+        <ListView 
+	        android:id="@android:id/list" 
+	        android:layout_width="fill_parent" 
+	        android:layout_height="fill_parent" 
+	        android:layout_weight="1" 
+	        android:choiceMode="none"
+        />
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="fill_parent" android:orientation="vertical">
+            <TextView android:text="test" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <TextView android:text="bar" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        </LinearLayout>
+   
+    </LinearLayout>
+</LinearLayout>
