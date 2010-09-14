@@ -21,6 +21,7 @@
 			</intent-filter>
 </activity>
 <activity android:name=".RecordExercise"></activity>
+<activity android:name=".ExerciseHistory"></activity>
 </application>
     <uses-sdk android:minSdkVersion="5" />
 

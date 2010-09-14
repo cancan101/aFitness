@@ -13,14 +13,17 @@ import android.util.Log;
 
 
 public class DbAdapter {
+	public static final String ENTRY_ID = "entry_id";
+	
 	public static final class MuscleGroups implements BaseColumns{
 		private MuscleGroups(){}
 		
 		private static final String NAME_ABDOMINALS = "Abdominals";
 		private static final String NAME_BACK = "Back";
 		private static final String NAME_CHEST= "Chest";
-
-
+		private static final String NAME_ARMS= "Arms";
+		private static final String NAME_LEGS= "Legs";
+		private static final String NAME_SHOULDERS="Shoulders";
 		
 		public static final String DATABASE_TABLE = "muscle_groups";
 		
@@ -164,7 +167,7 @@ public class DbAdapter {
 	}
 
     public static final String DATABASE_NAME = "data";
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 8;
     
     private static final String TAG = "DbAdapter";
     
@@ -186,8 +189,8 @@ public class DbAdapter {
 			db.execSQL(Exercises.DATABASE_CREATE);
 			db.execSQL(Equipments.DATABASE_CREATE);
 			db.execSQL(Muscles.DATABASE_CREATE);
+			db.execSQL(ExerciseMuscleGroups.DATABASE_CREATE);			
 			db.execSQL(ExerciseMuscles.DATABASE_CREATE);
-			db.execSQL(ExerciseMuscleGroups.DATABASE_CREATE);
             db.execSQL(Workouts.DATABASE_CREATE);
 			db.execSQL(WorkoutExercises.DATABASE_CREATE);
             db.execSQL(Activities.DATABASE_CREATE);	
@@ -205,10 +208,10 @@ public class DbAdapter {
             db.execSQL("DROP TABLE IF EXISTS " + Activities.DATABASE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + WorkoutExercises.DATABASE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + Workouts.DATABASE_TABLE);
-            db.execSQL("DROP TABLE IF EXISTS " + Equipments.DATABASE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + ExerciseMuscles.DATABASE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + ExerciseMuscleGroups.DATABASE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + Muscles.DATABASE_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + Equipments.DATABASE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + Exercises.DATABASE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + MuscleGroups.DATABASE_TABLE);
             
@@ -289,11 +292,11 @@ public class DbAdapter {
 		private static void createMuscleGroups(SQLiteDatabase db){
 			String[] names = {
 				MuscleGroups.NAME_ABDOMINALS,
-				"Arms",
+				MuscleGroups.NAME_ARMS,
 				MuscleGroups.NAME_BACK,
 				MuscleGroups.NAME_CHEST,
-				"Legs",
-				"Shoulders",
+				MuscleGroups.NAME_LEGS,
+				MuscleGroups.NAME_SHOULDERS,
 				};
 			
 			for(String name : names){
@@ -323,10 +326,12 @@ public class DbAdapter {
 
 		private static void insertDummyData(SQLiteDatabase db) {
 			long benchPress = createExercise("Bench Press", db);
+			long legCurl = createExercise("Leg Curl", db);
 			long pullups = createExercise("Pullups", db);
 			
 			long squat = createExercise("Squat", db);
 			long dips = createExercise("Dips", db);
+			
 			createExercise("Flies", db);
 			createExercise("Chin-ups", db);
 			createExercise("Dumbell Shoulder Press", db);
@@ -355,27 +360,33 @@ public class DbAdapter {
 
 			long muscleGroup_id_back = getMuscleGroupByName(MuscleGroups.NAME_BACK, db);
 			long muscleGroup_id_chest= getMuscleGroupByName(MuscleGroups.NAME_CHEST, db);
+			long muscleGroup_id_arm= getMuscleGroupByName(MuscleGroups.NAME_ARMS, db);
+			long muscleGroup_id_leg= getMuscleGroupByName(MuscleGroups.NAME_LEGS, db);
 
 			long trapezius = createMuscle("Trapezius", muscleGroup_id_back, db);	
 			long pectoralis = createMuscle("Pectoralis", muscleGroup_id_chest, db);
-			createMuscle("Deltoids", muscleGroup_id_chest, db);	
-			createMuscle("Rotator Cuff", muscleGroup_id_chest, db);	
-			createMuscle("Gastrocnemius", muscleGroup_id_chest, db);	
-			createMuscle("Soleus", muscleGroup_id_chest, db);	
-			createMuscle("Hamstrings", muscleGroup_id_chest, db);	
-			createMuscle("Glutes", muscleGroup_id_chest, db);	
-			createMuscle("Quadriceps", muscleGroup_id_chest, db);	
-			createMuscle("Wrist Flxors", muscleGroup_id_chest, db);	
-			createMuscle("Biceps Brachii", muscleGroup_id_chest, db);	
-			createMuscle("Triceps Brachii", muscleGroup_id_chest, db);	
+			createMuscle("Deltoids", muscleGroup_id_back, db);	
+			createMuscle("Rotator Cuff", muscleGroup_id_arm, db);	
+			createMuscle("Gastrocnemius", muscleGroup_id_leg, db);	
+			createMuscle("Soleus", muscleGroup_id_leg, db);	
+			long hamstrings = createMuscle("Hamstrings", muscleGroup_id_leg, db);	
+			createMuscle("Glutes", muscleGroup_id_leg, db);	
+			createMuscle("Quadriceps", muscleGroup_id_leg, db);	
+			createMuscle("Wrist Flexors", muscleGroup_id_arm, db);	
+			createMuscle("Biceps Brachii", muscleGroup_id_arm, db);	
+			createMuscle("Triceps Brachii", muscleGroup_id_arm, db);	
 
 
 			
 			recordPrimaryMuscle(benchPress, pectoralis, db);
 			recordPrimaryMuscle(pullups, trapezius, db);
-
+			recordPrimaryMuscle(legCurl, hamstrings, db);
 			
 			recordMuscleGroup(benchPress, muscleGroup_id_chest, db);
+			recordMuscleGroup(legCurl, muscleGroup_id_leg, db);
+			recordMuscleGroup(pullups, muscleGroup_id_back, db);
+			recordMuscleGroup(squat, muscleGroup_id_leg, db);
+
 
 			
 		}
@@ -469,7 +480,7 @@ public class DbAdapter {
     public Cursor fetchExercisesForWorkout(long workout_id){
 		SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 		builder.setTables(WorkoutExercises.DATABASE_TABLE + " we join " + Exercises.DATABASE_TABLE + " e on we." + WorkoutExercises.KEY_EXERCISE + " = e." + Exercises._ID);
-		return builder.query(mDb, new String[] {"we." + WorkoutExercises._ID + " as " + WorkoutExercises._ID, "we." + WorkoutExercises.KEY_EXERCISE + " as " + WorkoutExercises.KEY_EXERCISE, "e." + Exercises.KEY_NAME + " as " + Exercises.KEY_NAME}, "we." + WorkoutExercises.KEY_WORKOUT + "=" + workout_id, null, null, null, null);
+		return builder.query(mDb, new String[] {"e." + Exercises._ID + " as " + Exercises._ID, "we." + WorkoutExercises._ID + " as " + ENTRY_ID, "we." + WorkoutExercises.KEY_EXERCISE + " as " + WorkoutExercises.KEY_EXERCISE, "e." + Exercises.KEY_NAME + " as " + Exercises.KEY_NAME}, "we." + WorkoutExercises.KEY_WORKOUT + "=" + workout_id, null, null, null, null);
     }
     
     public long createExercise(String name){
@@ -488,13 +499,13 @@ public class DbAdapter {
     public Cursor fetchExercisesForMuscleGroup(long musclegroup_id){
 		SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 		builder.setTables(ExerciseMuscleGroups.DATABASE_TABLE + " emg join " + Exercises.DATABASE_TABLE + " e on emg." + ExerciseMuscleGroups.KEY_EXERCISE + " = e." + Exercises._ID);
-		return builder.query(mDb, new String[] {"emg." + ExerciseMuscleGroups._ID + " as " + ExerciseMuscleGroups._ID, "emg." + ExerciseMuscleGroups.KEY_EXERCISE + " as " + ExerciseMuscleGroups.KEY_EXERCISE, "e." + Exercises.KEY_NAME + " as " + Exercises.KEY_NAME}, "emg." + ExerciseMuscleGroups.KEY_MUSCLE_GROUP + "=" + musclegroup_id, null, null, null, null);
+		return builder.query(mDb, new String[] {"e." + Exercises._ID + " as " + Exercises._ID, "emg." + ExerciseMuscleGroups.KEY_EXERCISE + " as " + ExerciseMuscleGroups.KEY_EXERCISE, "e." + Exercises.KEY_NAME + " as " + Exercises.KEY_NAME}, "emg." + ExerciseMuscleGroups.KEY_MUSCLE_GROUP + "=" + musclegroup_id, null, null, null, null);
     }
     
     public Cursor fetchExercisesForMuscle(long muscle_id){
 		SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 		builder.setTables(ExerciseMuscles.DATABASE_TABLE + " em join " + Exercises.DATABASE_TABLE + " e on em." + ExerciseMuscles.KEY_EXERCISE + " = e." + Exercises._ID);
-		return builder.query(mDb, new String[] {"em." + ExerciseMuscles._ID + " as " + ExerciseMuscles._ID, "em." + ExerciseMuscles.KEY_EXERCISE + " as " + ExerciseMuscles.KEY_EXERCISE, "e." + Exercises.KEY_NAME + " as " + Exercises.KEY_NAME}, "em." + ExerciseMuscles.KEY_MUSCLE + " = ?", new String[]{ muscle_id + ""}, null, null, null);
+		return builder.query(mDb, new String[] {"e." + Exercises._ID + " as " + Exercises._ID, "em." + ExerciseMuscles.KEY_EXERCISE + " as " + ExerciseMuscles.KEY_EXERCISE, "e." + Exercises.KEY_NAME + " as " + Exercises.KEY_NAME}, "em." + ExerciseMuscles.KEY_MUSCLE + " = ?", new String[]{ muscle_id + ""}, null, null, null);
     }
     
     public Cursor fetchMusclesForMuscleGroup(long musclegroup_id){
@@ -522,6 +533,24 @@ public class DbAdapter {
 
 	public int deleteWorkout(long id) {
 		return mDb.delete(Workouts.DATABASE_TABLE, Workouts._ID + "=?", new String[]{id +""});		
+	}
+
+	public Cursor getWorkoutDates(long exerciseId) {
+		return mDb.query(
+				true, 
+				Activities.DATABASE_TABLE, 
+				new String[]{Activities.KEY_RECORD_DATE, Activities.KEY_RECORD_DATE + " as _id" }, 
+				Activities.KEY_EXERCISE + "=?", 
+				new String[]{ exerciseId +""},
+				null, null, Activities.KEY_RECORD_DATE + " desc", null);		
+	}
+	
+    public long addWorkoutExercise(long workout_id, long exercise_id){
+    	return DatabaseHelper.addWorkoutExercise(workout_id, exercise_id, mDb);
+    }
+
+	public int deleteWorkoutExercise(long workoutExerciseId) {
+		return mDb.delete(WorkoutExercises.DATABASE_TABLE, WorkoutExercises._ID + "=?", new String[]{workoutExerciseId +""});		
 	}
 
 }

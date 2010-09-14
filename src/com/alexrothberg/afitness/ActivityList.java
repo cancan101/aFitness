@@ -23,10 +23,15 @@ public class ActivityList extends ListActivity {
 	private DbAdapter adapter;
 	private static final String TAG = "ActivityList"; 
 
+	private int requestCode;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		requestCode = getIntent().getIntExtra(MuscleGroupChooser.REQUEST_CODE_ID, MuscleGroupChooser.REQUEST_CODE_NONE);
+
+		
 		TextView empty = new TextView(this);
 		empty.setText( "No Exercises");
 		getListView().setEmptyView(empty);
@@ -35,10 +40,10 @@ public class ActivityList extends ListActivity {
 		
 		Bundle extras = getIntent().getExtras();
 		if (extras != null){
-			muscleGroupId = extras.getLong("MuscleGroups:" + MuscleGroups._ID);
-			muscleGroup = extras.getString("MuscleGroups:" + MuscleGroups.KEY_NAME);
-			muscleName = extras.getString("Muscles:" + Muscles.KEY_NAME);
-			muscleId = extras.getLong("Muscles:" + Muscles._ID);
+			muscleGroupId = extras.getLong(MuscleGroupChooser.MUSCLE_GROUP_PREFIX + MuscleGroups._ID);
+			muscleGroup = extras.getString(MuscleGroupChooser.MUSCLE_GROUP_PREFIX + MuscleGroups.KEY_NAME);
+			muscleName = extras.getString(MuscleChooser.MUSCLE_PREFIX + Muscles.KEY_NAME);
+			muscleId = extras.getLong(MuscleChooser.MUSCLE_PREFIX + Muscles._ID);
 		}
 
 		if(muscleId > 0){
@@ -85,7 +90,13 @@ public class ActivityList extends ListActivity {
 		String exercise_name = cursor.getString(cursor.getColumnIndex(Exercises.KEY_NAME));
 		
 		intent.putExtra(Exercises.KEY_NAME, exercise_name);
-		startActivity(intent);
+		
+		if( requestCode == MuscleGroupChooser.REQUEST_CODE_CHOOSE_EXERCISE){
+        	setResult(RESULT_OK, intent);
+        	finish();			
+		}else{
+			startActivity(intent);
+		}
 		
 	}
  	

@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.MergeCursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -19,10 +20,21 @@ public class MuscleGroupChooser extends ListActivity{
 	private static final String TAG = "MuscleGroupChooser";
 
 	private DbAdapter adapter;
-
+	private int requestCode;
+		
+	public static final int REQUEST_CODE_NONE = 0;
+	public static final int REQUEST_CODE_CHOOSE_MUSCLE_GROUP = 1;
+	public static final int REQUEST_CODE_CHOOSE_MUSCLE = 2;
+	public static final int REQUEST_CODE_CHOOSE_EXERCISE = 3;
+	
+	public static final String REQUEST_CODE_ID = "REQUEST_CODE";
+	public static final String MUSCLE_GROUP_PREFIX = "MuscleGroups:";
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		requestCode = getIntent().getIntExtra(REQUEST_CODE_ID, REQUEST_CODE_NONE);
 		
 		setTitle("Muscle Groups");
 		
@@ -33,9 +45,21 @@ public class MuscleGroupChooser extends ListActivity{
 		
 		Cursor muscleGroups = adapter.fetchAllMuscleGroups();
 		MatrixCursor extras = new MatrixCursor(new String[]{MuscleGroups._ID, MuscleGroups.KEY_NAME});
-		extras.addRow(new Object[]{0, "All Exercises"});
-		extras.addRow(new Object[]{-1, "All Muscles"});
-		Cursor combined = new MergeCursor(new Cursor[]{extras, muscleGroups} );
+		
+		if(requestCode != REQUEST_CODE_CHOOSE_MUSCLE_GROUP && requestCode != REQUEST_CODE_CHOOSE_MUSCLE){
+			extras.addRow(new Object[]{0, "All Exercises"});
+		}
+		
+		if(requestCode != REQUEST_CODE_CHOOSE_MUSCLE_GROUP){
+			extras.addRow(new Object[]{-1, "All Muscles"});
+		}
+		
+		Cursor combined;
+		if(requestCode != REQUEST_CODE_CHOOSE_MUSCLE_GROUP){
+			combined = new MergeCursor(new Cursor[]{extras, muscleGroups} );
+		}else{
+			combined = muscleGroups;
+		}
 		startManagingCursor(combined);
 		
 		String[] from = { MuscleGroups.KEY_NAME };
@@ -59,19 +83,43 @@ public class MuscleGroupChooser extends ListActivity{
             // For some reason the requested item isn't available, do nothing
             return;
         }
+        
         Intent i = null;
         if(id>0){
         	String muscleGroup = cursor.getString(cursor.getColumnIndex(MuscleGroups.KEY_NAME));
         	i = new Intent(this, MuscleChooser.class);
-	        i.putExtra("MuscleGroups:" + MuscleGroups._ID, id);
-	        i.putExtra("MuscleGroups:" + MuscleGroups.KEY_NAME, muscleGroup);
+        	i.putExtras(getIntent());
+	        i.putExtra(MUSCLE_GROUP_PREFIX + MuscleGroups._ID, id);
+	        i.putExtra(MUSCLE_GROUP_PREFIX + MuscleGroups.KEY_NAME, muscleGroup);
         }else if (id ==0){
         	i = new Intent(this, ActivityList.class);
+        	i.putExtras(getIntent());
         }else{
         	i = new Intent(this, MuscleChooser.class);
-        }		
-		
-		startActivity(i);		
+        	i.putExtras(getIntent());
+        }
+        
+        if(requestCode == REQUEST_CODE_CHOOSE_MUSCLE_GROUP){
+        	assert(id > 0);
+        	setResult(RESULT_OK, i);
+        	finish();
+        }else if(requestCode != MuscleGroupChooser.REQUEST_CODE_NONE){
+        	startActivityForResult(i, requestCode);        	
+        }else{		
+        	startActivity(i);
+        }
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		//Log.v(TAG, resultCode + "");
+
+		if(requestCode == this.requestCode && resultCode==RESULT_OK){
+        	setResult(resultCode, data);
+        	finish();			
+		}else{
+			super.onActivityResult(requestCode, resultCode, data);
+		}
 	}
 	
 	protected class ColorSpecial extends SimpleCursorAdapter{

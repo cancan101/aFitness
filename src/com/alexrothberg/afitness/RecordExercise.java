@@ -11,6 +11,7 @@ import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -33,16 +34,18 @@ import android.widget.TextView;
 import com.alexrothberg.afitness.DbAdapter.Activities;
 import com.alexrothberg.afitness.DbAdapter.Exercises;
 import com.alexrothberg.afitness.DbAdapter.UNITS;
+import com.alexrothberg.afitness.DbAdapter.WorkoutExercises;
 import com.alexrothberg.afitness.DbAdapter.Workouts;
 
 
 public class RecordExercise extends ListActivity implements OnClickListener, OnDateSetListener{
 	public static class MySimpleCursorAdapter extends SimpleCursorAdapter{
-		private final int positionId;
+		private final int positionId, unitsId;
 		public MySimpleCursorAdapter(Context context, int layout, Cursor c,
-				String[] from, int[] to, int positionId) {
+				String[] from, int[] to, int positionId, int unitsId) {
 			super(context, layout, c, from, to);
 			this.positionId=positionId;
+			this.unitsId=unitsId;
 		}
 		
 		private static class ViewHolder{
@@ -61,7 +64,7 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 			ViewHolder viewHolder = (ViewHolder)ret.getTag();
 			if(viewHolder==null){
 				set_txt = ((TextView)ret.findViewById(positionId));
-				units_txt = ((TextView)ret.findViewById(R.id.units_txt));
+				units_txt = ((TextView)ret.findViewById(unitsId));
 				ret.setTag(new ViewHolder(units_txt, set_txt));
 			}else{			
 				set_txt = viewHolder.set_txt;
@@ -80,8 +83,7 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 				units_txt.setText("plates");
 			}else{
 				units_txt.setText("(units=#" + units + ")");
-			}
-				
+			}				
 			
 			return ret;
 		}
@@ -114,11 +116,19 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
         super.onCreate(savedInstanceState);
         setContentView(R.layout.record_exercise);
         
-        final Calendar c = Calendar.getInstance();
+        long recordDate = getIntent().getLongExtra(Activities.KEY_RECORD_DATE, Long.MIN_VALUE);
+        Log.v(TAG, recordDate + " " + Long.MIN_VALUE);
+        Calendar c;
+        if(recordDate > Long.MIN_VALUE){
+        	c = Calendar.getInstance();
+        	c.setTimeInMillis(recordDate);
+        }else{        
+	        c = Calendar.getInstance();
+        }
+
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
         mDay = c.get(Calendar.DAY_OF_MONTH);
-
         
         
         mDbHelper = new DbAdapter(this);
@@ -153,20 +163,10 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 	private void updateTitle() {
 		Calendar calendar = getCalendar();
 		
-		String date_str = null;
-		if(compareDates(calendar, Calendar.getInstance())){
-			date_str = "today";
-		}else{
-			date_str = "on " + DateFormat.getDateInstance().format(calendar.getTime());
-		}
-		setTitle("Log Entry for " + exercise_name + " " + date_str);
+		String date_str = Utilities.getDateString(calendar);
+		setTitle("Log Entry for " + exercise_name + "(" +exercise_id+ ")" + " " + date_str);
 	}
-	
-	private boolean compareDates(Calendar a, Calendar b){
-		return a.get(Calendar.YEAR) == b.get(Calendar.YEAR) &&
-		a.get(Calendar.MONTH) == b.get(Calendar.MONTH) &&
-		a.get(Calendar.DATE) == b.get(Calendar.DATE);
-	}
+
     
     @Override
     protected void onDestroy() {
@@ -183,7 +183,7 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
         String[] from = new String[]{Activities.KEY_REPS, Activities.KEY_WEIGHT};
         int[] to = new int[]{ R.id.rep_txt, R.id.weight_txt};
 
-		ListAdapter adapter = new MySimpleCursorAdapter(this, list_item_layout, allActivities, from, to, R.id.rep_num);
+		ListAdapter adapter = new MySimpleCursorAdapter(this, list_item_layout, allActivities, from, to, R.id.rep_num, R.id.units_txt);
 		setListAdapter(adapter);
 	}
 
@@ -195,8 +195,10 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 //	        Intent i = new Intent(this, ActivityList.class);
 //	        startActivity(i);
 		}else if(v==historyBtn){
-//	        Intent i = new Intent(this, MainUI.class);
-//	        startActivity(i);			
+	        Intent i = new Intent(this, ExerciseHistory.class);
+	        i.putExtra(Exercises._ID, exercise_id);
+	        i.putExtra(Exercises.KEY_NAME, exercise_name);
+	        startActivity(i);			
 		}else if(v==recordDatebtn){
 			showDialog(DATE_DIALOG_ID);
 		}
