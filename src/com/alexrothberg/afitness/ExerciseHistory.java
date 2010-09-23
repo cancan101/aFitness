@@ -2,24 +2,19 @@ package com.alexrothberg.afitness;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.alexrothberg.afitness.R;
-import com.alexrothberg.afitness.DbAdapter.Activities;
-import com.alexrothberg.afitness.DbAdapter.Exercises;
-import com.alexrothberg.afitness.DbAdapter.UNITS;
-import com.alexrothberg.afitness.RecordExercise.MySimpleCursorAdapter;
-
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
+import com.alexrothberg.afitness.DbAdapter.Activities;
+import com.alexrothberg.afitness.DbAdapter.UNITS;
 
 
 public class ExerciseHistory extends ListActivity {

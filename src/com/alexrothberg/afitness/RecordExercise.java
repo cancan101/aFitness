@@ -1,7 +1,6 @@
 package com.alexrothberg.afitness;
 
 
-import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -19,6 +18,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -34,8 +34,6 @@ import android.widget.TextView;
 import com.alexrothberg.afitness.DbAdapter.Activities;
 import com.alexrothberg.afitness.DbAdapter.Exercises;
 import com.alexrothberg.afitness.DbAdapter.UNITS;
-import com.alexrothberg.afitness.DbAdapter.WorkoutExercises;
-import com.alexrothberg.afitness.DbAdapter.Workouts;
 
 
 public class RecordExercise extends ListActivity implements OnClickListener, OnDateSetListener{
@@ -195,14 +193,22 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 //	        Intent i = new Intent(this, ActivityList.class);
 //	        startActivity(i);
 		}else if(v==historyBtn){
-	        Intent i = new Intent(this, ExerciseHistory.class);
-	        i.putExtra(Exercises._ID, exercise_id);
-	        i.putExtra(Exercises.KEY_NAME, exercise_name);
-	        startActivity(i);			
+	        showHistory();
 		}else if(v==recordDatebtn){
-			showDialog(DATE_DIALOG_ID);
+			changeDate();
 		}
 
+	}
+
+	private void showHistory() {
+		Intent i = new Intent(this, ExerciseHistory.class);
+		i.putExtra(Exercises._ID, exercise_id);
+		i.putExtra(Exercises.KEY_NAME, exercise_name);
+		startActivity(i);
+	}
+
+	private void changeDate() {
+		showDialog(DATE_DIALOG_ID);
 	}
 
 	private void onRecordClick() {
@@ -295,5 +301,43 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.record_exercises_context, menu);
 		
-	}	
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()){
+			case R.id.record_excercise_menu_change_date:
+				changeDate();
+				return true;
+			case R.id.record_excercise_menu_history:
+				showHistory();
+				return true;
+		}
+		return super.onContextItemSelected(item);
+	}
+
+	private void deleteWorkout(long itemId) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info;
+        try {
+             info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        } catch (ClassCastException e) {
+            Log.e(TAG, "bad menuInfo", e);
+            return false;
+        }
+		
+		switch(item.getItemId()){
+			case R.id.record_exercises_context_delete:
+				deleteWorkout(info.id);
+				return true;
+		}
+		return super.onContextItemSelected(item);
+
+	}
+	
 }

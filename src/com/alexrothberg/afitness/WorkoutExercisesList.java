@@ -15,10 +15,8 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
 import com.alexrothberg.afitness.DbAdapter.Exercises;
-import com.alexrothberg.afitness.DbAdapter.MuscleGroups;
 import com.alexrothberg.afitness.DbAdapter.Workouts;
 
 public class WorkoutExercisesList extends ListActivity {

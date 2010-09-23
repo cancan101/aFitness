@@ -6,7 +6,7 @@
 		android:title="Change Date" 
 	/>
 	<item 
-		android:id="@+id/record_excercise_menu_change_history"
+		android:id="@+id/record_excercise_menu_history"
 		android:title="Exercise History"
 	/>	
 	<item 

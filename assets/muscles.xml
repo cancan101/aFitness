@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MuscleGroups>
+	<MusclesGroup name="Chest">
+		<Muscle name="Pectoralis" />
+	</MusclesGroup>
+	<MusclesGroup name="Arms">
+		<Muscle name="Biceps Brachii" />
+		<Muscle name="Brachialis" />
+		<Muscle name="Triceps Brachii" />
+		<Muscle name="Wrist Extensors" />
+		<Muscle name="Wrist Flexors" />
+	</MusclesGroup>
+	<MusclesGroup name="Back">
+		<Muscle name="Trapezius" />
+		<Muscle name="Latissimus Dorsi" />
+	</MusclesGroup>
+	<MusclesGroup name="Abdominals" />
+	<MusclesGroup name="Legs" />
+	<MusclesGroup name="Shoulders">
+		<Muscle name="Deltoid" />
+	</MusclesGroup>
+</MuscleGroups>

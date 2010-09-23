@@ -1,7 +1,5 @@
 package com.alexrothberg.afitness;
 
-import com.alexrothberg.afitness.DbAdapter.Workouts;
-
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,11 +11,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+
+import com.alexrothberg.afitness.DbAdapter.Workouts;
 
 
 public class MyWorkouts extends ListActivity  {
@@ -42,9 +41,13 @@ public class MyWorkouts extends ListActivity  {
         mDbHelper.open();
         
         registerForContextMenu(getListView());
+        
+        
 		
 	}
-	
+
+
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
@@ -88,8 +91,10 @@ public class MyWorkouts extends ListActivity  {
 				return true;
 			case R.id.my_workouts_context_rename:
 				renameWorkout(info.position, info.id);
+				return true;
 			case R.id.my_workouts_context_delete:
 				deleteWorkout(info.id);
+				return true;
 		}
 		return super.onContextItemSelected(item);
 	}

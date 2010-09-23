@@ -1,8 +1,6 @@
 package com.alexrothberg.afitness;
 
 
-import com.alexrothberg.afitness.DbAdapter.Workouts;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,6 +8,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.alexrothberg.afitness.DbAdapter.Workouts;
 
 public class EditWorkout extends Activity implements OnClickListener {
 	private Button save_btn, cancel_btn;
