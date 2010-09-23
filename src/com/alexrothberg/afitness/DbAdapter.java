@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import com.alexrothberg.afitness.data.loading.ExerciseLoader;
 import com.alexrothberg.afitness.data.loading.MuscleLoader;
 
 
@@ -165,7 +166,7 @@ public class DbAdapter {
 	}
 
     public static final String DATABASE_NAME = "data";
-    public static final int DATABASE_VERSION = 16;
+    public static final int DATABASE_VERSION = 20;
     
     private static final String TAG = "DbAdapter";
     
@@ -191,6 +192,9 @@ public class DbAdapter {
 			MuscleLoader loader = new MuscleLoader(this.context, db);
             loader.loadMuscles();
             
+            ExerciseLoader exerciseLoader = new ExerciseLoader(context, db);
+            exerciseLoader.load();
+            
             insertDummyData(db);
 		}
 
@@ -213,7 +217,7 @@ public class DbAdapter {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
             
-            if(oldVersion == 15){
+            if(oldVersion >= 15 && oldVersion < 19){
             	noDrop(db);
             }else{
             	drop(db);
@@ -256,7 +260,7 @@ public class DbAdapter {
 			}			
 		}
 		
-		private static long containsMuscleGroup(String muscleGroup_name, SQLiteDatabase db){
+		public static long containsMuscleGroup(String muscleGroup_name, SQLiteDatabase db){
 			
 			Cursor ret = db.query(MuscleGroups.DATABASE_TABLE, new String[]{ MuscleGroups._ID}, MuscleGroups.KEY_NAME + "=?", new String[]{muscleGroup_name}, null, null, null);
 			int count = ret.getCount();
@@ -271,8 +275,11 @@ public class DbAdapter {
 			}			
 		}
 		
+		public static long getMuscleFromName(String muscle_name, SQLiteDatabase db){
+			return containsMuscle( muscle_name, -1, db);
+		}
 		
-		private static long containsMuscle(String muscle_name, long muscleGroup_id, SQLiteDatabase db){
+		public static long containsMuscle(String muscle_name, long muscleGroup_id, SQLiteDatabase db){
 			Cursor ret = db.query(Muscles.DATABASE_TABLE, new String[]{ Muscles._ID, Muscles.KEY_MUSCLE_GROUP_ID}, Muscles.KEY_NAME + "=?", new String[]{muscle_name}, null, null, null);
 			int count = ret.getCount();
 			
@@ -282,7 +289,9 @@ public class DbAdapter {
 				return -1;
 			}else{
 				ret.moveToFirst();
-				assert(ret.getLong(1) == muscleGroup_id);
+				if(muscleGroup_id != -1){
+					assert(ret.getLong(1) == muscleGroup_id);
+				}
 				return ret.getLong(0); //We can hardcode the index here
 			}			
 		}
@@ -403,27 +412,29 @@ public class DbAdapter {
 				return db.insert(Muscles.DATABASE_TABLE, null, values);
 			}
 		}
+	    
+	    public static long getMuscleGroupForMuscle(long muscle_id, SQLiteDatabase db){
+	    	Cursor cursor = db.query(
+	    			Muscles.DATABASE_TABLE, 
+	    			new String[]{ Muscles.KEY_MUSCLE_GROUP_ID }, 
+	    			Muscles._ID +"=?", 
+	    			new String[]{ muscle_id +""}, 
+	    			null, 
+	    			null, //having
+	    			null //orderBy
+	    			);
+	    	int rows = cursor.getCount();
+	    	assert (rows <= 1);
+	    	if(rows == 0){
+	    		return -1;
+	    	}else{
+	    		cursor.moveToFirst();
+	    		return cursor.getLong(0);
+	    	}
+	    }
 
 		private void insertDummyData(SQLiteDatabase db) {
 
-
-			
-//			long benchPress = createExercise("Bench Press", db);
-//			long legCurl = createExercise("Leg Curl", db);
-//			long pullups = createExercise("Pullups", db);
-//			
-//			long squat = createExercise("Squat", db);
-//			long dips = createExercise("Dips", db);
-//			
-//			createExercise("Flies", db);
-//			createExercise("Chin-ups", db);
-//			createExercise("Dumbell Shoulder Press", db);
-//			createExercise("Skullcrushers", db);
-//			createExercise("Front Squat", db);
-//			createExercise("Inclined Press", db);
-//
-//
-//
 //			
 //			long upperBody = createWorkout("Upper Body", db);
 //			long lowerBody = createWorkout("Lower Body", db);
@@ -441,36 +452,6 @@ public class DbAdapter {
 //			addExerciseEquipment(dips, dipMachine, db);
 //			addExerciseEquipment(benchPress, flatBench, db);
 //
-//			long muscleGroup_id_back = getMuscleGroupByName(MuscleGroups.NAME_BACK, db);
-//			long muscleGroup_id_chest= getMuscleGroupByName(MuscleGroups.NAME_CHEST, db);
-//			long muscleGroup_id_arm= getMuscleGroupByName(MuscleGroups.NAME_ARMS, db);
-//			long muscleGroup_id_leg= getMuscleGroupByName(MuscleGroups.NAME_LEGS, db);
-//
-//			long trapezius = createMuscle("Trapezius", muscleGroup_id_back, db);	
-//			long pectoralis = createMuscle("Pectoralis", muscleGroup_id_chest, db);
-//			createMuscle("Deltoids", muscleGroup_id_back, db);	
-//			createMuscle("Rotator Cuff", muscleGroup_id_arm, db);	
-//			createMuscle("Gastrocnemius", muscleGroup_id_leg, db);	
-//			createMuscle("Soleus", muscleGroup_id_leg, db);	
-//			long hamstrings = createMuscle("Hamstrings", muscleGroup_id_leg, db);	
-//			createMuscle("Glutes", muscleGroup_id_leg, db);	
-//			createMuscle("Quadriceps", muscleGroup_id_leg, db);	
-//			createMuscle("Wrist Flexors", muscleGroup_id_arm, db);	
-//			createMuscle("Biceps Brachii", muscleGroup_id_arm, db);	
-//			createMuscle("Triceps Brachii", muscleGroup_id_arm, db);	
-//
-//
-//			
-//			recordPrimaryMuscle(benchPress, pectoralis, db);
-//			recordPrimaryMuscle(pullups, trapezius, db);
-//			recordPrimaryMuscle(legCurl, hamstrings, db);
-//			
-//			recordMuscleGroup(benchPress, muscleGroup_id_chest, db);
-//			recordMuscleGroup(legCurl, muscleGroup_id_leg, db);
-//			recordMuscleGroup(pullups, muscleGroup_id_back, db);
-//			recordMuscleGroup(squat, muscleGroup_id_leg, db);
-
-
 			
 		}
 
@@ -603,7 +584,8 @@ public class DbAdapter {
     			null, 
     			null, 
     			Muscles.KEY_NAME);
-    }
+    }    
+
     
     public Cursor fetchAllMuscles(){
     	return mDb.query(

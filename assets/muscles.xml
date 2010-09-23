@@ -4,9 +4,9 @@
 		<Muscle name="Pectoralis" />
 	</MusclesGroup>
 	<MusclesGroup name="Arms">
-		<Muscle name="Biceps Brachii" />
+		<Muscle name="Biceps brachii" />
 		<Muscle name="Brachialis" />
-		<Muscle name="Triceps Brachii" />
+		<Muscle name="Triceps brachii" />
 		<Muscle name="Wrist Extensors" />
 		<Muscle name="Wrist Flexors" />
 	</MusclesGroup>
@@ -15,8 +15,11 @@
 		<Muscle name="Latissimus Dorsi" />
 	</MusclesGroup>
 	<MusclesGroup name="Abdominals" />
-	<MusclesGroup name="Legs" />
+	<MusclesGroup name="Legs">
+		<Muscle name="Quadriceps"/>
+		<Muscle name="Glutes"/>
+	</MusclesGroup>
 	<MusclesGroup name="Shoulders">
-		<Muscle name="Deltoid" />
+		<Muscle name="Deltoids" />
 	</MusclesGroup>
 </MuscleGroups>

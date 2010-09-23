@@ -62,21 +62,23 @@ public class MuscleLoader {
 		
 		for(int i=0; i<muscleGroups.getLength();i++){
 			Node muscleGroup_node = muscleGroups.item(i);
-			if(muscleGroup_node.getNodeType() == Node.ELEMENT_NODE){	        		
+			if(muscleGroup_node.getNodeType() == Node.ELEMENT_NODE){				
 				doProcessMuscleGroup(muscleGroup_node);
 			}	        	
 		}
 	}
 
-	private void doProcessMuscleGroup(Node muscleGroup_node) {		
+	private void doProcessMuscleGroup(Node muscleGroup_node) {
+		assert(muscleGroup_node.getNodeName().equals("MuscleGroup"));
+		
 		String muscleGroup_name = muscleGroup_node.getAttributes().getNamedItem("name").getNodeValue();
 		long muscleGroup_id = ensureMuscleGroupExists(muscleGroup_name);
 		
-		Log.v(TAG, "muscleGroup_node: " + muscleGroup_node.getNodeName() + " " + muscleGroup_name + "(" +muscleGroup_id  +")");
+		Log.v(TAG, "muscleGroup_node: " + muscleGroup_name + "(" +muscleGroup_id  +")");
 		NodeList muscles = muscleGroup_node.getChildNodes();
         for(int i=0; i<muscles.getLength();i++){
         	Node muscle_node = muscles.item(i);
-        	if(muscle_node.getNodeType() == Node.ELEMENT_NODE){	        		
+        	if(muscle_node.getNodeType() == Node.ELEMENT_NODE){				
         		doProcessMuscle(muscle_node, muscleGroup_id);
         	}	        	
         }
@@ -87,9 +89,11 @@ public class MuscleLoader {
 	}
 
 	private void doProcessMuscle(Node muscleNode, long muscleGroup_id) {
+		assert(muscleNode.getNodeName().equals("Muscle"));
+		
 		final String muscle_name = muscleNode.getAttributes().getNamedItem("name").getNodeValue();
 		long muscle_id = ensureMuscleExists(muscle_name, muscleGroup_id);
-		Log.v(TAG, "muscleNode: " + muscleNode.getNodeName() + " " + muscle_name);	
+		Log.v(TAG, "muscleNode: " + muscle_name +"(" + muscle_id +")");	
 	}
 
 	private long ensureMuscleExists(String muscle_name, long muscleGroup_id) {

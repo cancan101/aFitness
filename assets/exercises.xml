@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Exercises>
-	<Exercise name="Bench Press">
+	<Exercise name="Barbell Bench Press">
+		<MajorMuscles>
+			<Muscle name="Pectoralis" />			
+		</MajorMuscles>
+		<SecondaryMuscles>
+			<Muscle name="Triceps brachii" />
+			<Muscle name="Deltoids" />
+		</SecondaryMuscles>
+	</Exercise>
+	<Exercise name="Dip">
+		<MajorMuscles>
+			<Muscle name="Triceps brachii" />
+		</MajorMuscles>
+		<SecondaryMuscles>
+			<Muscle name="Pectoralis" />
+			<Muscle name="Deltoids" />
+		</SecondaryMuscles>
+	</Exercise>
+	<Exercise name="Squat">
+		<MajorMuscles>
+			<Muscle name="Quadriceps" />
+		</MajorMuscles>
+		<SecondaryMuscles>
+			<Muscle name="Glutes" />
+		</SecondaryMuscles>
 	</Exercise>
 </Exercises>
