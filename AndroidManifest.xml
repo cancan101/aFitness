@@ -11,6 +11,8 @@
 
 <activity android:name=".MyWorkouts" android:theme="@android:style/Theme.NoTitleBar"></activity>
 <activity android:name=".EditWorkout" android:theme="@android:style/Theme.Dialog"></activity>
+<activity android:name=".CreateExercise" android:theme="@android:style/Theme.Dialog"></activity>
+
 <activity android:name=".WorkoutExercisesList" ></activity>
 <activity android:name=".MuscleGroupChooser"  android:theme="@android:style/Theme.NoTitleBar"></activity>
 

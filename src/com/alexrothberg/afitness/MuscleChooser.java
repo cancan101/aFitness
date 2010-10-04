@@ -8,6 +8,9 @@ import android.database.MatrixCursor;
 import android.database.MergeCursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -19,7 +22,7 @@ import com.alexrothberg.afitness.DbAdapter.Muscles;
 public class MuscleChooser extends ListActivity {
 	private static final String TAG = "ExerciseMuscleChooser";
 
-	private long muscleGroupId;
+	private long muscleGroupId = 0L;
 	private String muscleGroup;
 	private Bundle extras;
 	
@@ -41,9 +44,13 @@ public class MuscleChooser extends ListActivity {
 		extras = getIntent().getExtras();
 		
 		Cursor muscles = null;
+		
 		if (extras != null){
 			muscleGroupId = extras.getLong(MuscleGroupChooser.MUSCLE_GROUP_PREFIX + MuscleGroups._ID);
-			muscleGroup = extras.getString(MuscleGroupChooser.MUSCLE_GROUP_PREFIX + MuscleGroups.KEY_NAME);
+			muscleGroup = extras.getString(MuscleGroupChooser.MUSCLE_GROUP_PREFIX + MuscleGroups.KEY_NAME);			
+		}
+		
+		if (muscleGroupId != 0L){
 			setTitle("Muscles for " + muscleGroup);
 			
 			Log.v(TAG, "fetching muscles for " + muscleGroup + "(" + muscleGroupId + ")");
@@ -81,6 +88,35 @@ public class MuscleChooser extends ListActivity {
     	super.onDestroy();
     	adapter.close();
     }
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.muscle_chooser_menu, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()){
+		case R.id.muscle_chooser_menu_add_exercise:
+			addExercise();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	private void addExercise() {
+		Intent intent = new Intent(this, CreateExercise.class);
+		
+		if(muscleGroupId != 0L){
+			intent.putExtra(CreateExercise.MUSCLE_GROUP_PREFIX +":" + MuscleGroups._ID, muscleGroupId);
+		}
+		
+		startActivity(intent);		
+	}
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {

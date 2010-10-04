@@ -12,9 +12,11 @@
 	</MusclesGroup>
 	<MusclesGroup name="Back">
 		<Muscle name="Trapezius" />
-		<Muscle name="Latissimus Dorsi" />
+		<Muscle name="Latissimus dorsi" />
 	</MusclesGroup>
-	<MusclesGroup name="Abdominals" />
+	<MusclesGroup name="Abdominals">
+	<Muscle name="Obliques" />
+	</MusclesGroup>
 	<MusclesGroup name="Legs">
 		<Muscle name="Quadriceps"/>
 		<Muscle name="Glutes"/>

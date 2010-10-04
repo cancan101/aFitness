@@ -166,7 +166,7 @@ public class DbAdapter {
 	}
 
     public static final String DATABASE_NAME = "data";
-    public static final int DATABASE_VERSION = 20;
+    public static final int DATABASE_VERSION = 21;
     
     private static final String TAG = "DbAdapter";
     
@@ -624,6 +624,14 @@ public class DbAdapter {
 	
 	public long createMuscle(String muscle_name, long muscleGroup_id){
 		return DatabaseHelper.createMuscle(muscle_name, muscleGroup_id, mDb);
+	}
+	
+	public long recordPrimaryMuscle(long exercise_id, long muscle_id){
+		return DatabaseHelper.recordPrimaryMuscle(exercise_id, muscle_id, this.mDb);
+	}
+	
+	public long recordMuscleGroup(long exercise_id, long muscleGroup_id){
+		return DatabaseHelper.recordMuscleGroup(exercise_id, muscleGroup_id, this.mDb);
 	}
 
 }

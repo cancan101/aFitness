@@ -40,12 +40,8 @@ public class MyWorkouts extends ListActivity  {
         mDbHelper = new DbAdapter(this);
         mDbHelper.open();
         
-        registerForContextMenu(getListView());
-        
-        
-		
+        registerForContextMenu(getListView());        
 	}
-
 
 
 	@Override

@@ -7,6 +7,9 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.MergeCursor;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -141,6 +144,31 @@ public class MuscleGroupChooser extends ListActivity{
 			return ret;
 		}
 	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()){
+		case R.id.muscle_group_chooser_menu_add_exercise:
+			addExercise();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	private void addExercise() {
+		Intent intent = new Intent(this, CreateExercise.class);
+		startActivity(intent);		
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.muscle_group_chooser_menu, menu);
+	    return true;
+	}
+	
 	
 	
 }
