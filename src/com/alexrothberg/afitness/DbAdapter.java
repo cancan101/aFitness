@@ -633,5 +633,9 @@ public class DbAdapter {
 	public long recordMuscleGroup(long exercise_id, long muscleGroup_id){
 		return DatabaseHelper.recordMuscleGroup(exercise_id, muscleGroup_id, this.mDb);
 	}
+	
+	public long getMuscleGroupForMuscle(long muscle_id){
+		return DatabaseHelper.getMuscleGroupForMuscle(muscle_id, this.mDb);
+	}
 
 }

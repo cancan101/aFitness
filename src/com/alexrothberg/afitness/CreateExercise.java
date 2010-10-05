@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CursorAdapter;
@@ -35,10 +37,13 @@ public class CreateExercise extends Activity implements OnClickListener {
 	private long requested_mg, requested_muscle;
 	
 	private Cursor muscleGroups;
+	private Cursor muscles;
 	
 	public static final String MUSCLE_GROUP_PREFIX ="MuscleGroups"; 
 	public static final String MUSCLE_PREFIX ="Muscles"; 
 	
+	private static final String TAG = "CreateExercise";
+	private int goto_pos = -1;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,6 +71,7 @@ public class CreateExercise extends Activity implements OnClickListener {
 		
 		
 		setContentView(R.layout.exercises_create);
+		getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
 		
 		muscle_group_spinner = (Spinner)findViewById(R.id.muscle_group_spinner);
 		muscle_spinner = (Spinner)findViewById(R.id.muscle_spinner);
@@ -107,35 +113,60 @@ public class CreateExercise extends Activity implements OnClickListener {
 			}
 		});
 		
-		if(requested_mg != 0L){
+		if(requested_muscle != 0L && requested_mg == 0L){
+			Log.v(TAG, "requested_muscle provided but no requested_mg. Looking up mg.");
+			requested_mg = dbAdapter.getMuscleGroupForMuscle(requested_muscle);
+		}
+		
+		Log.v(TAG, "requested_mg=" + requested_mg);
+		Log.v(TAG, "requested_muscle=" + requested_muscle);
+		if(requested_mg != 0L){			
 			selectMuscleGroup(requested_mg);
+			setMuscleSpinner(requested_mg);
+			if(requested_muscle != 0L){
+				selectMuscle(requested_muscle);				
+			}
+			
 		}
 		
 	}
 
-	private void selectMuscleGroup(Long requestedMg) {
+	private void selectMuscle(long requestedMuscle) {
 		do{
-			if(muscleGroups.getLong(muscleGroups.getColumnIndex(MuscleGroups._ID)) == requestedMg.longValue()){
+			if(muscles.getLong(muscles.getColumnIndex(Muscles._ID)) == requestedMuscle){
+				int position = muscles.getPosition();
+				Log.d(TAG, "Setting muscle_spinner.selection=" + position);
+				//muscle_spinner.setSelection(position);
+				goto_pos = position;
+				return;
+			}
+		}while(muscles.moveToNext());
+		
+	}
+
+	private void selectMuscleGroup(long requestedMg) {
+		do{
+			if(muscleGroups.getLong(muscleGroups.getColumnIndex(MuscleGroups._ID)) == requestedMg){
 				int position = muscleGroups.getPosition();
 				muscle_group_spinner.setSelection(position);
 				return;
 			}
 		}while(muscleGroups.moveToNext());
-		
-//		int num_muscle_groups = muscleGroups.getCount();
-//		for(int i =0;i < num_muscle_groups;i++){
-//			
-//		}
-		
+				
 	}
 
 	protected void setMuscleSpinner(long musclegroup_id) {
-		Cursor muscles = dbAdapter.fetchMusclesForMuscleGroup(musclegroup_id);
+		muscles = dbAdapter.fetchMusclesForMuscleGroup(musclegroup_id);
 		startManagingCursor(muscles);
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, muscles, new String[]{ Muscles.KEY_NAME }, new int[]{ android.R.id.text1 });
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		muscle_spinner.setAdapter(adapter);
 		muscle_spinner.setPrompt("Select muscle");
+		
+		if(goto_pos != -1){
+			muscle_spinner.setSelection(goto_pos);
+			goto_pos = -1;
+		}
 		
 	}
 	

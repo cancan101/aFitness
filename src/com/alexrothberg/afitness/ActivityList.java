@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -105,5 +108,38 @@ public class ActivityList extends ListActivity {
     	super.onDestroy();
     	adapter.close();
     }
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.activity_list_menu, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()){
+		case R.id.activity_list_menu_add_exercise:
+			addExercise();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	private void addExercise() {
+		Intent intent = new Intent(this, CreateExercise.class);
+		
+		if(muscleGroupId != 0L){
+			intent.putExtra(CreateExercise.MUSCLE_GROUP_PREFIX +":" + MuscleGroups._ID, muscleGroupId);
+		}
+		
+		if(muscleId != 0L){
+			intent.putExtra(CreateExercise.MUSCLE_PREFIX +":" + Muscles._ID, muscleId);
+		}
+		
+		startActivity(intent);		
+	}
 
 }
