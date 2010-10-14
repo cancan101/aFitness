@@ -217,7 +217,7 @@ public class DbAdapter {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
             
-            if(oldVersion >= 15 && oldVersion < 19){
+            if(oldVersion >= 15 && oldVersion < 20){
             	noDrop(db);
             }else{
             	drop(db);
@@ -595,9 +595,18 @@ public class DbAdapter {
     					Muscles.KEY_NAME,
     			}, null, null, null, null, Muscles.KEY_NAME);    	
     }
-
-	public int deleteWorkout(long id) {
-		return mDb.delete(Workouts.DATABASE_TABLE, Workouts._ID + "=?", new String[]{id +""});		
+    
+    /**
+     * Responsible for deleting a workout and any associated exercises for this workout.
+     * 
+     * @param workoutExerciseId
+     * @return the number of rows deleted
+     */
+	public int deleteWorkout(long workoutExerciseId) {
+		int deleted = 0;
+		deleted += mDb.delete(WorkoutExercises.DATABASE_TABLE, WorkoutExercises._ID + "=?", new String[]{workoutExerciseId +""});		
+		deleted += mDb.delete(Workouts.DATABASE_TABLE, Workouts._ID + "=?", new String[]{workoutExerciseId +""});
+		return deleted;
 	}
 
 	public Cursor getWorkoutDates(long exerciseId) {
@@ -636,6 +645,101 @@ public class DbAdapter {
 	
 	public long getMuscleGroupForMuscle(long muscle_id){
 		return DatabaseHelper.getMuscleGroupForMuscle(muscle_id, this.mDb);
+	}
+	
+	public int deleteActivity(long activity_id){
+		return mDb.delete(Activities.DATABASE_TABLE, Activities._ID + "=?", new String[]{Long.toString(activity_id)});				
+	}
+	
+	public String getExerciseName(long exercise_id){
+    	Cursor cursor = mDb.query(
+    			Exercises.DATABASE_TABLE, 
+    			new String[]{ Exercises.KEY_NAME }, 
+    			Exercises._ID +"=?", 
+    			new String[]{ exercise_id +""}, 
+    			null, 
+    			null, //having
+    			null //orderBy
+    			);
+    	int rows = cursor.getCount();
+    	assert (rows <= 1);
+    	if(rows == 0){
+    		return null;
+    	}else{
+    		cursor.moveToFirst();
+    		return cursor.getString(0);
+    	}
+	}
+
+	public int deleteExercise(long exerciseId) {
+		int deleted = 0;
+		deleted += deleteAllActivitiesForExercise(exerciseId);
+		deleted += removeExerciseFromWorkouts(exerciseId);
+		deleted += removeMuscleEntriesForExercise(exerciseId);
+		deleted += removeMuscleGroupForExercise(exerciseId);
+		
+		deleted += deleteExerciseActual(exerciseId);
+		return deleted;
+		
+	}
+
+	private int deleteAllActivitiesForExercise(long exerciseId) {
+		return mDb.delete(Activities.DATABASE_TABLE, Activities.KEY_EXERCISE + "=?", new String[]{Long.toString(exerciseId)});		
+	}
+
+	private int removeExerciseFromWorkouts(long exerciseId) {
+		return mDb.delete(WorkoutExercises.DATABASE_TABLE, WorkoutExercises.KEY_EXERCISE + "=?", new String[]{Long.toString(exerciseId)});				
+	}
+
+	private int removeMuscleEntriesForExercise(long exerciseId) {
+		return mDb.delete(ExerciseMuscles.DATABASE_TABLE, ExerciseMuscles.KEY_EXERCISE + "=?", new String[]{Long.toString(exerciseId)});			
+	}
+
+	private int removeMuscleGroupForExercise(long exerciseId) {
+		return mDb.delete(ExerciseMuscleGroups.DATABASE_TABLE, ExerciseMuscleGroups.KEY_EXERCISE + "=?", new String[]{Long.toString(exerciseId)});		
+	}
+
+	private int deleteExerciseActual(long exerciseId) {
+		return mDb.delete(Exercises.DATABASE_TABLE, Exercises._ID + "=?", new String[]{Long.toString(exerciseId)});			
+	}
+
+	public Cursor getAllActivities() {
+    	Cursor cursor = mDb.query(
+    			Activities.DATABASE_TABLE, 
+    			new String[]{ Activities.KEY_EXERCISE, Activities.KEY_RECORD_DATE, Activities.KEY_WEIGHT, Activities.KEY_REPS  }, 
+    			null, 
+    			null, 
+    			null, 
+    			null, //having
+    			Activities.KEY_RECORD_DATE + ", " + Activities.KEY_EXERCISE + ", " + Activities._ID// order by
+    			);
+    	return cursor;
+	}
+
+	public Cursor getAllWorkoutDates() {
+		return mDb.query(
+    			Activities.DATABASE_TABLE, 
+    			new String[]{ 	Activities.KEY_RECORD_DATE + " as " + BaseColumns._ID, 
+    							"count( distinct " + Activities.KEY_EXERCISE + " ) as exercise_count", 
+    							"count( * ) as activity_count" }, 
+    			null, 
+    			null, 
+    			Activities.KEY_RECORD_DATE, 
+    			null, //having
+    			Activities.KEY_RECORD_DATE + " desc" //orderBy
+    			);
+	}
+
+	public Cursor getAlExerciseOn(long selectedDateLong) {
+		return mDb.query(
+    			Activities.DATABASE_TABLE + " a join " + Exercises.DATABASE_TABLE + " x on a." + Activities.KEY_EXERCISE + " = x." + Exercises._ID, 
+    			new String[]{ "a." + Activities.KEY_EXERCISE + " as " + Exercises._ID, "x." + Exercises.KEY_NAME + " as " + Exercises.KEY_NAME, "count( * ) as activity_count" }, 
+    			"a." + Activities.KEY_RECORD_DATE + "=?", 
+    			new String[] { Long.toString(selectedDateLong) }, 
+    			"a." + Activities.KEY_EXERCISE, 
+    			null, //having
+    			"min( a." + Activities._ID + " ) asc" //orderBy
+    			);
 	}
 
 }

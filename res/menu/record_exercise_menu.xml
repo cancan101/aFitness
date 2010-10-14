@@ -3,15 +3,18 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
 	<item 
 		android:id="@+id/record_excercise_menu_change_date"
-		android:title="Change Date" 
+		android:title="Change Date"
+		android:icon="@drawable/calendar_icon"
 	/>
 	<item 
 		android:id="@+id/record_excercise_menu_history"
 		android:title="Exercise History"
+		android:icon="@drawable/history"
 	/>	
 	<item 
 		android:id="@+id/record_excercise_menu_record"
 		android:title="Record Exercise"
 		android:icon="@android:drawable/ic_menu_add"
+		android:visible="false"
 	/>
 </menu>

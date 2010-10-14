@@ -49,8 +49,8 @@ public class CreateExercise extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		
 		if (savedInstanceState != null){
-			exercise_id = (Long)savedInstanceState.getSerializable(Exercises._ID);
-			exercise_name = (String)savedInstanceState.getSerializable(Exercises.KEY_NAME);
+			//exercise_id = (Long)savedInstanceState.getSerializable(Exercises._ID);
+			//exercise_name = (String)savedInstanceState.getSerializable(Exercises.KEY_NAME);
 		}else{
 	        Bundle extras = getIntent().getExtras();
 	        if (extras != null){
@@ -64,7 +64,7 @@ public class CreateExercise extends Activity implements OnClickListener {
 	        }
         }
 		
-
+		assert(exercise_id==null);
 
 		dbAdapter = new DbAdapter(this);
 		dbAdapter.open();
@@ -192,8 +192,9 @@ public class CreateExercise extends Activity implements OnClickListener {
 			
 			DbAdapter mDbHelper = new DbAdapter(this);
 	        mDbHelper.open();
-	        if (exercise_id == null){
+	        if (exercise_id == null || exercise_id==0L){
 	        	long exercise_id = mDbHelper.createExercise(exercise_name);
+	        	assert(exercise_id > 0);
 	        	
 	        	long muscle_id = muscle_spinner.getSelectedItemId();
 	        	assert(muscle_id != Spinner.INVALID_ROW_ID);
@@ -204,6 +205,7 @@ public class CreateExercise extends Activity implements OnClickListener {
 	        	mDbHelper.recordPrimaryMuscle(exercise_id, muscle_id);
 	        	mDbHelper.recordMuscleGroup(exercise_id, muscleGroup_id);
 	        }else{
+	        	throw new RuntimeException("not here!");
 	        //	mDbHelper.renameWorkout(workout_id, workout_name);
 	        }
 	        mDbHelper.close();

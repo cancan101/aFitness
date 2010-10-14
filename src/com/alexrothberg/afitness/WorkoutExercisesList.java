@@ -15,9 +15,11 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import com.alexrothberg.afitness.DbAdapter.Exercises;
 import com.alexrothberg.afitness.DbAdapter.Workouts;
+import com.alexrothberg.afitness.TouchInterceptor.DropListener;
 
 public class WorkoutExercisesList extends ListActivity {
 	private Long workout_id; 
@@ -33,11 +35,22 @@ public class WorkoutExercisesList extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+// This is for TouchInterceptor
+//		setContentView(R.layout.ttt);
+//		
+//		((TouchInterceptor)getListView()).setDropListener(new DropListener() {
+//			
+//			@Override
+//			public void drop(int from, int to) {
+//				Log.v(TAG, from + " " + to);
+//			}
+//		});
 		
-		if (savedInstanceState != null){
-			workout_id = (Long)savedInstanceState.getSerializable(Workouts._ID);
-			workout_name = (String)savedInstanceState.getSerializable(Workouts.KEY_NAME);
-		}else{
+//		if (savedInstanceState != null){
+//			workout_id = (Long)savedInstanceState.getSerializable(Workouts._ID);
+//			workout_name = (String)savedInstanceState.getSerializable(Workouts.KEY_NAME);
+//		}else{
 	        Bundle extras = getIntent().getExtras();
 	        if (extras != null){
 	        	workout_id =  extras.getLong(Workouts._ID);
@@ -45,7 +58,7 @@ public class WorkoutExercisesList extends ListActivity {
 	        }else{
 	        	throw new IllegalArgumentException("No workout supplied to WorkoutExercisesList");
 	        }
-        }       
+//        }       
 		
 		setTitle(workout_name);
 		
@@ -62,20 +75,21 @@ public class WorkoutExercisesList extends ListActivity {
 		startManagingCursor(exercises);		
 
 		
-		ListAdapter adapter = new SimpleCursorAdapter(this, R.layout.std_list_item, exercises, from, to);
+		ListAdapter adapter = new SimpleCursorAdapter(this, R.layout.std_list_item2, exercises, from, to);
 		
 		setListAdapter(adapter);
 	}
 	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
 		viewExercise(position, id);
 	}
 	
     @Override
     protected void onDestroy() {
-    	super.onDestroy();
     	mDbHelper.close();
+    	super.onDestroy();    	
     }
     
 	@Override
@@ -121,6 +135,7 @@ public class WorkoutExercisesList extends ListActivity {
 				return true;
 			case R.id.my_workout_exercise_context_delete:
 				deleteWorkoutExercise(info.position, info.id);
+				return true;
 		}
 		return super.onContextItemSelected(item);
 	}
@@ -173,7 +188,12 @@ public class WorkoutExercisesList extends ListActivity {
 				if(resultCode == RESULT_OK){
 					long exercise_id = data.getLongExtra(Exercises._ID, 0);
 					assert(exercise_id > 0);
-					mDbHelper.addWorkoutExercise(workout_id, exercise_id);
+					long row = mDbHelper.addWorkoutExercise(workout_id, exercise_id);
+					assert(row > 0);
+					String exercise_name = mDbHelper.getExerciseName(exercise_id);
+		        	Toast toast = Toast.makeText(this, "Added " + exercise_name + " to " + this.workout_name, Toast.LENGTH_LONG);
+	            	toast.show();					
+					
 				}
 				break;
 			default:

@@ -3,6 +3,8 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
 	<item android:id="@+id/muscle_group_chooser_menu_add_exercise"
 		android:title="Add Exercise" android:icon="@android:drawable/ic_menu_add"/>
+	<item android:id="@+id/muscle_group_chooser_menu_debug"
+		android:title="Debug"/>		
 	<!--
 	<item android:id="@+id/muscle_group_chooser_menu_add_mg"
 		android:title="Add Muscle Group" android:icon="@android:drawable/ic_menu_add"/>

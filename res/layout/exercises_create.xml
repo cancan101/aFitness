@@ -7,15 +7,17 @@
  	<TextView 
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:id="@+id/create_exercise_exercise_name_lbl"
 		android:text="Exercises Name:"></TextView>
  	<EditText
  		android:id="@+id/exercise_create_name"
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" />
+		android:layout_height="wrap_content"
+		 />
  	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Muscle Group:" />
-	<Spinner android:id="@+id/muscle_group_spinner" android:layout_width="wrap_content" android:layout_height="wrap_content"></Spinner>
+	<Spinner android:id="@+id/muscle_group_spinner" android:layout_width="fill_parent" android:layout_height="wrap_content"></Spinner>
  	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Primary Muscle:" />
-	<Spinner android:id="@+id/muscle_spinner" android:layout_width="wrap_content" android:layout_height="wrap_content"></Spinner>
+	<Spinner android:id="@+id/muscle_spinner" android:layout_width="fill_parent" android:layout_height="wrap_content"></Spinner>
 	<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
 	<Button android:id="@+id/exercise_create_save_btn" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Save" />
 	<Button android:id="@+id/exercise_create_cancel_btn" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cancel" />

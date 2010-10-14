@@ -45,13 +45,15 @@ public class ExerciseHistory extends ListActivity {
 		exerciseId = extras.getLong(DbAdapter.Exercises._ID);
 		exercise_name = extras.getString(DbAdapter.Exercises.KEY_NAME);
 		
+        assert(exercise_name.equals(dbAdapter.getExerciseName(exerciseId)));
+		
 		setDateState();
 		
 		fillData();
 	}
 
 	private void setDateState() {
-		setTitle("History for: " + exercise_name + "("+ exerciseId + ")");
+		setTitle("History for: " + exercise_name);
 		
 		state = STATE.DATES;
 	}
@@ -77,7 +79,7 @@ public class ExerciseHistory extends ListActivity {
 						Calendar workout_date = Calendar.getInstance();
 						workout_date.setTimeInMillis(date_long);
 	
-					    String label = Utilities.getDateString(workout_date, context);
+					    String label = Utilities.getRelativeDateString(workout_date, context);
 						
 						((TextView) view).setText(label);
 						return true;
@@ -142,7 +144,7 @@ public class ExerciseHistory extends ListActivity {
 		state = STATE.EXERCISES;
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(dateLong);
-		setTitle("History for: " + exercise_name + "("+ exerciseId + ")  on " + Utilities.getDateString(calendar, this));
+		setTitle("History for: " + exercise_name + " on " + Utilities.getRelativeDateString(calendar, this));
 	}
 	
 	public static class SetCursorAdapter extends SimpleCursorAdapter{
@@ -160,8 +162,7 @@ public class ExerciseHistory extends ListActivity {
 			StringBuilder builder = new StringBuilder();
 			builder.append("Set " + (position+1) + ": "); 
 			Cursor c = getCursor();
-			builder.append(c.getInt(c.getColumnIndex(Activities.KEY_REPS)));
-			builder.append("@");
+
 			builder.append(Float.toString(c.getFloat(c.getColumnIndex(Activities.KEY_WEIGHT))));
 			
 			int units = c.getInt(c.getColumnIndex(Activities.KEY_UNITS));
@@ -175,7 +176,14 @@ public class ExerciseHistory extends ListActivity {
 				builder.append("plates");
 			}else{
 				builder.append("(units=#" + units + ")");
-			}				
+			}		
+			
+			builder.append(" for ");
+			
+			builder.append(c.getInt(c.getColumnIndex(Activities.KEY_REPS)));
+
+			builder.append(" reps");
+
 			
 			((TextView)ret).setText(builder);
 			

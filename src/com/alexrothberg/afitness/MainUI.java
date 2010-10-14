@@ -18,6 +18,6 @@ public class MainUI extends TabActivity {
 		tabHost.addTab(tabHost.newTabSpec("exercises").setIndicator("Exercises", res.getDrawable(R.drawable.dumbbell)).setContent(new Intent(this, MuscleGroupChooser.class)));
 		tabHost.addTab(tabHost.newTabSpec("my_workouts").setIndicator("My Workouts", res.getDrawable(R.drawable.pencil)).setContent(new Intent(this, MyWorkouts.class)));
 		//tabHost.addTab(tabHost.newTabSpec("routines").setIndicator("Routines").setContent(new Intent(this, RecordExercise.class)));
-		//tabHost.addTab(tabHost.newTabSpec("logs").setIndicator("Logs").setContent(new Intent(this, MyWorkouts.class)));
+		tabHost.addTab(tabHost.newTabSpec("logs").setIndicator("Logs", res.getDrawable(R.drawable.history)).setContent(new Intent(this, LogActivity.class)));
 	}	
 }

@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -39,11 +40,15 @@ import com.alexrothberg.afitness.DbAdapter.UNITS;
 public class RecordExercise extends ListActivity implements OnClickListener, OnDateSetListener{
 	public static class MySimpleCursorAdapter extends SimpleCursorAdapter{
 		private final int positionId, unitsId;
+		
+		private final int units_column_index;
+		
 		public MySimpleCursorAdapter(Context context, int layout, Cursor c,
 				String[] from, int[] to, int positionId, int unitsId) {
 			super(context, layout, c, from, to);
 			this.positionId=positionId;
 			this.unitsId=unitsId;
+			this.units_column_index = c.getColumnIndex(Activities.KEY_UNITS);
 		}
 		
 		private static class ViewHolder{
@@ -71,7 +76,7 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 			
 			set_txt.setText("Set " + (position+1) + ": "); 
 			Cursor c = getCursor();
-			int units = c.getInt(c.getColumnIndex(Activities.KEY_UNITS));
+			int units = c.getInt(units_column_index);
 			
 			if(units == UNITS.LBS.ordinal()){
 				units_txt.setText("lbs");
@@ -96,7 +101,8 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 	private TextView weightEntryTxt;
 	private TextView repsEntryTxt;
 	
-	private ImageButton restTimerBtn, historyBtn, recordDatebtn;
+	private ImageButton restTimerBtn;
+	//, historyBtn, recordDatebtn;
 	
 	private Long exercise_id;
 	private String exercise_name;
@@ -141,32 +147,63 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
         restTimerBtn = (ImageButton)findViewById(R.id.restTimerBtn);
         restTimerBtn.setOnClickListener(this);
 
-        historyBtn = (ImageButton)findViewById(R.id.historyBtn);
-        historyBtn.setOnClickListener(this);
-        
-        recordDatebtn = (ImageButton)findViewById(R.id.recordDatebtn);
-        recordDatebtn.setOnClickListener(this);
+//        historyBtn = (ImageButton)findViewById(R.id.historyBtn);
+//        historyBtn.setOnClickListener(this);
+//        
+//        recordDatebtn = (ImageButton)findViewById(R.id.recordDatebtn);
+//        recordDatebtn.setOnClickListener(this);
         
         Bundle extras = getIntent().getExtras();
         exercise_id = extras.getLong(Exercises._ID);
         exercise_name = extras.getString(Exercises.KEY_NAME);
+        
+        assert(exercise_name.equals(mDbHelper.getExerciseName(exercise_id)));
+        
         updateTitle();
         
         fillData();
         
         registerForContextMenu(getListView());
+        
     
     }
 
 	private void updateTitle() {
 		Calendar calendar = getCalendar();
 		
-		String date_str = Utilities.getDateString(calendar);
-		setTitle("Log Entry for " + exercise_name + "(" +exercise_id+ ")" + " " + date_str);
+		String date_str = Utilities.getRelativeDateString(calendar);
+//		setTitle("Log Entry for " + exercise_name + "(" +exercise_id+ ")" + " " + date_str);
+		if(date_str.equals("Today")){
+			setTitle(exercise_name);
+		}else{
+			setTitle(exercise_name + " for " + date_str);
+		}
+
+	}
+	
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		
+        Cursor cursor = (Cursor) getListAdapter().getItem(position);
+        if (cursor == null) {
+            // For some reason the requested item isn't available, do nothing
+            return;
+        }
+		int reps = cursor.getInt(cursor.getColumnIndex(Activities.KEY_REPS));
+		float weight = cursor.getFloat(cursor.getColumnIndex(Activities.KEY_WEIGHT));
+		
+		setWorkoutInfo(weight, reps);
+
 	}
 
     
-    @Override
+    private void setWorkoutInfo(float weight, int reps) {
+    	repsEntryTxt.setText(Integer.toString(reps));
+    	weightEntryTxt.setText(Float.toString(weight));
+	}
+
+	@Override
     protected void onDestroy() {
     	super.onDestroy();
     	mDbHelper.close();
@@ -192,11 +229,12 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 		}else if(v == restTimerBtn){
 //	        Intent i = new Intent(this, ActivityList.class);
 //	        startActivity(i);
-		}else if(v==historyBtn){
-	        showHistory();
-		}else if(v==recordDatebtn){
-			changeDate();
 		}
+//		else if(v==historyBtn){
+//	        showHistory();
+//		}else if(v==recordDatebtn){
+//			changeDate();
+//		}
 
 	}
 
@@ -316,9 +354,9 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 		return super.onContextItemSelected(item);
 	}
 
-	private void deleteWorkout(long itemId) {
-		// TODO Auto-generated method stub
-		
+	private void deleteWorkout(long activity_id) {
+		mDbHelper.deleteActivity(activity_id);
+		fillData();
 	}
 	
 	@Override

@@ -151,6 +151,9 @@ public class MuscleGroupChooser extends ListActivity{
 		case R.id.muscle_group_chooser_menu_add_exercise:
 			addExercise();
 			return true;
+		case R.id.muscle_group_chooser_menu_debug:
+			Intent intent = new Intent(this, DebugActivity.class);
+			startActivity(intent);			
 		}
 		return super.onOptionsItemSelected(item);
 	}
