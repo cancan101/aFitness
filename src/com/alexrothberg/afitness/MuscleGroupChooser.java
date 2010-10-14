@@ -148,12 +148,9 @@ public class MuscleGroupChooser extends ListActivity{
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()){
-		case R.id.muscle_group_chooser_menu_add_exercise:
-			addExercise();
-			return true;
-		case R.id.muscle_group_chooser_menu_debug:
-			Intent intent = new Intent(this, DebugActivity.class);
-			startActivity(intent);			
+			case R.id.muscle_group_chooser_menu_add_exercise:
+				addExercise();
+				return true;	
 		}
 		return super.onOptionsItemSelected(item);
 	}

@@ -1,19 +1,22 @@
 package com.alexrothberg.afitness;
 
-import com.alexrothberg.afitness.DbAdapter.Activities;
-import com.alexrothberg.afitness.DbAdapter.Exercises;
-
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.BaseColumns;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
+import com.alexrothberg.afitness.DbAdapter.Activities;
+import com.alexrothberg.afitness.DbAdapter.Exercises;
 
 public class LogActivity extends ListActivity {
 	private DbAdapter adapter;
@@ -61,10 +64,30 @@ public class LogActivity extends ListActivity {
 		
 		if(state == STATE.DATES){
 			selectDate(id);
-		}	
+		}else if(state == STATE.EXERCISES){
+	        Cursor cursor = (Cursor) getListAdapter().getItem(position);
+	        if (cursor == null) {
+	            // For some reason the requested item isn't available, do nothing
+	            return;
+	        }
+			String exercise_name = cursor.getString(cursor.getColumnIndex(Exercises.KEY_NAME));
+			
+			selectExeciseDate(id, exercise_name);
+		}
 		
 	}
 	
+	private void selectExeciseDate(final long exercise_id, final String exercise_name) {
+		Intent intent = new Intent(this, RecordExercise.class);
+		
+		intent.putExtra(Exercises._ID, exercise_id);
+		intent.putExtra(Exercises.KEY_NAME, exercise_name);
+		intent.putExtra(Activities.KEY_RECORD_DATE, this.selected_date_long);
+		
+		startActivity(intent);
+		
+	}
+
 	private void selectDate(long id) {
 		selected_date_long = id;
 		goExerciseMode();
@@ -103,6 +126,31 @@ public class LogActivity extends ListActivity {
 		adapter.close();
 		super.onDestroy();
 	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()){
+			case R.id.log_menu_debug:
+				Intent intent = new Intent(this, DebugActivity.class);
+				startActivity(intent);
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	private void addExercise() {
+		Intent intent = new Intent(this, CreateExercise.class);
+		startActivity(intent);		
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.log_menu, menu);
+	    return true;
+	}	
 	
 	private static final class WorkoutDateSummary extends SimpleCursorAdapter{
 		private final int date_column_index;

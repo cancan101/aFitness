@@ -7,23 +7,20 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.alexrothberg.afitness.DbAdapter.Exercises;
 import com.alexrothberg.afitness.DbAdapter.MuscleGroups;
 import com.alexrothberg.afitness.DbAdapter.Muscles;
-import com.alexrothberg.afitness.DbAdapter.Workouts;
 
 public class CreateExercise extends Activity implements OnClickListener {
 	private Button save_btn, cancel_btn;
@@ -204,6 +201,10 @@ public class CreateExercise extends Activity implements OnClickListener {
 	        	
 	        	mDbHelper.recordPrimaryMuscle(exercise_id, muscle_id);
 	        	mDbHelper.recordMuscleGroup(exercise_id, muscleGroup_id);
+	        	
+	        	Toast toast = Toast.makeText(this, "Exercise Created: " + exercise_name_txt, Toast.LENGTH_LONG);
+	        	toast.show();
+	        	
 	        }else{
 	        	throw new RuntimeException("not here!");
 	        //	mDbHelper.renameWorkout(workout_id, workout_name);

@@ -26,11 +26,11 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alexrothberg.afitness.DbAdapter.Activities;
 import com.alexrothberg.afitness.DbAdapter.Exercises;
@@ -76,21 +76,14 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 			
 			set_txt.setText("Set " + (position+1) + ": "); 
 			Cursor c = getCursor();
-			int units = c.getInt(units_column_index);
-			
-			if(units == UNITS.LBS.ordinal()){
-				units_txt.setText("lbs");
-			}else if(units == UNITS.KGS.ordinal()){
-				units_txt.setText("kgs");
-			}else if(units == UNITS.PLATES.ordinal()){
-				units_txt.setText("plates");
-			}else{
-				units_txt.setText("(units=#" + units + ")");
-			}				
+			UNITS units = UNITS.values()[c.getInt(units_column_index)];
+						
+			units_txt.setText( Utilities.getUnitLabel(units) );
 			
 			return ret;
 		}
-		
+
+
 	}
 	
 	private static final String TAG = "RecordExercise";
@@ -101,7 +94,7 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 	private TextView weightEntryTxt;
 	private TextView repsEntryTxt;
 	
-	private ImageButton restTimerBtn;
+	private View restTimerBtn;
 	//, historyBtn, recordDatebtn;
 	
 	private Long exercise_id;
@@ -144,7 +137,7 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
         weightEntryTxt = (TextView)findViewById(R.id.weightEntryTxt);
         repsEntryTxt = (TextView)findViewById(R.id.repsEntryTxt);
         
-        restTimerBtn = (ImageButton)findViewById(R.id.restTimerBtn);
+        restTimerBtn = (View)findViewById(R.id.restTimerBtn);
         restTimerBtn.setOnClickListener(this);
 
 //        historyBtn = (ImageButton)findViewById(R.id.historyBtn);
@@ -159,9 +152,7 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
         
         assert(exercise_name.equals(mDbHelper.getExerciseName(exercise_id)));
         
-        updateTitle();
-        
-        fillData();
+        onDateChange();
         
         registerForContextMenu(getListView());
         
@@ -263,8 +254,13 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 			float weight = Float.parseFloat(weight_str);
 			Log.i(TAG, "Recording activity");
 			Date record_date = getCalendar().getTime();
+			UNITS units =  UNITS.LBS; //TODO: make this user settable 
+				
+			long activity_id =  mDbHelper.recordActivity(exercise_id, record_date, reps, weight, units);
 			
-			long activity_id =  mDbHelper.recordActivity(exercise_id, record_date, reps, weight, UNITS.LBS);
+        	Toast toast = Toast.makeText(this, Float.toString(weight) + Utilities.getUnitLabel(units) + " for " + reps + " reps" , Toast.LENGTH_LONG);
+        	toast.show();
+        	
 			if(activity_id == -1){
 				Log.e(TAG, "Insertion failed");
 			}else{
@@ -300,9 +296,13 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 			mYear = year;
 			mDay = dayOfMonth;
 			mMonth = monthOfYear;
-			updateTitle();
-			fillData();
+			onDateChange();
 		}
+	}
+
+	private void onDateChange() {
+		updateTitle();
+		fillData();
 	}
 	
 	@Override

@@ -35,7 +35,7 @@ public class MyWorkouts extends ListActivity  {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.my_workouts);
+		//setContentView(R.layout.my_workouts);
 				
         mDbHelper = new DbAdapter(this);
         mDbHelper.open();

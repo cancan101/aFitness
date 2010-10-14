@@ -1,11 +1,7 @@
 package com.alexrothberg.afitness;
 
-import java.text.DecimalFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.alexrothberg.afitness.DbAdapter.Activities;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -14,6 +10,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.alexrothberg.afitness.DbAdapter.Activities;
 
 public class DebugActivity extends Activity implements OnClickListener {
 	private EditText txt;

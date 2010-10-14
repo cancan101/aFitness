@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.alexrothberg.afitness.DbAdapter.Exercises;
 import com.alexrothberg.afitness.DbAdapter.Workouts;
-import com.alexrothberg.afitness.TouchInterceptor.DropListener;
 
 public class WorkoutExercisesList extends ListActivity {
 	private Long workout_id; 
@@ -75,7 +74,7 @@ public class WorkoutExercisesList extends ListActivity {
 		startManagingCursor(exercises);		
 
 		
-		ListAdapter adapter = new SimpleCursorAdapter(this, R.layout.std_list_item2, exercises, from, to);
+		ListAdapter adapter = new SimpleCursorAdapter(this, R.layout.std_list_item, exercises, from, to);
 		
 		setListAdapter(adapter);
 	}

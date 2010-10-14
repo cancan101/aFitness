@@ -13,12 +13,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.alexrothberg.afitness.DbAdapter;
-import com.alexrothberg.afitness.DbAdapter.DatabaseHelper;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import com.alexrothberg.afitness.DbAdapter.DatabaseHelper;
 
 public class MuscleLoader {
 	private static final String TAG = "MuscleLoader";

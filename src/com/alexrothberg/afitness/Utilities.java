@@ -5,6 +5,8 @@ import java.util.Calendar;
 
 import android.content.Context;
 
+import com.alexrothberg.afitness.DbAdapter.UNITS;
+
 public final class Utilities {
 	private Utilities(){}
 	
@@ -59,5 +61,21 @@ public final class Utilities {
 			final DateFormat dateFormat) {
 		return dateFormat.format(calendar.getTime());
 	}
+	
+	public static String getUnitLabel(UNITS units) {
+		switch (units) {
+		case LBS:
+			return "lbs";
+			
+		case KGS:
+			return "kgs";
+			
+		case PLATES:
+			return "plates";
+
+		default:
+			return units.name();
+		}
+	}	
 	
 }
