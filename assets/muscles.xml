@@ -13,15 +13,22 @@
 	<MusclesGroup name="Back">
 		<Muscle name="Trapezius" />
 		<Muscle name="Latissimus dorsi" />
+		<Muscle name="Lower Back" />
 	</MusclesGroup>
 	<MusclesGroup name="Abdominals">
-	<Muscle name="Obliques" />
+		<Muscle name="Obliques" />
+		<Muscle name="Rectus Abdominis" />
 	</MusclesGroup>
 	<MusclesGroup name="Legs">
-		<Muscle name="Quadriceps"/>
-		<Muscle name="Glutes"/>
+		<Muscle name="Gastrocnemius" />
+		<Muscle name="Glutes" />
+		<Muscle name="Hamstrings" />
+		<Muscle name="Soleus" />
+		<Muscle name="Quadriceps" />
 	</MusclesGroup>
 	<MusclesGroup name="Shoulders">
 		<Muscle name="Deltoids" />
+		<Muscle name="Infraspinatus" />
+		<Muscle name="Rotator Cuff" />
 	</MusclesGroup>
 </MuscleGroups>
