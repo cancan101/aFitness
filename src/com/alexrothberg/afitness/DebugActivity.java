@@ -18,9 +18,7 @@ public class DebugActivity extends Activity implements OnClickListener {
 	private Button saveWorkouts_btn;
 	
 	DbAdapter dbAdapter;
-	
-	private Map<Long, String> nameCache = new HashMap<Long, String>();
-	
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -100,6 +98,7 @@ public class DebugActivity extends Activity implements OnClickListener {
 		txt.setText(builder);
 	}
 	
+	private Map<Long, String> nameCache = new HashMap<Long, String>();
 	private String getExerciseName(long exercise_id){
 		String cacheVal = nameCache.get(exercise_id);
 		if (cacheVal != null){

@@ -33,17 +33,20 @@ public class MuscleLoader {
 	
 	public void loadMuscles(){
 		try {
-			InputStream is = context.getAssets().open("muscles.xml");
+			final InputStream is = context.getAssets().open("muscles.xml");
 			
-	        DocumentBuilder builder=DocumentBuilderFactory
+	        final DocumentBuilder builder=DocumentBuilderFactory
             .newInstance()
             .newDocumentBuilder();
 	        
-	        Document doc=builder.parse(is, null);
+	        final Document doc=builder.parse(is, null);
+	        is.close();
 	        
-	        Node root = doc.getDocumentElement();
+	        final Node root = doc.getDocumentElement();
 	        
+	        mDb.beginTransaction();
 	        doProcessMusclesXML(root);
+	        mDb.setTransactionSuccessful();
 	        
 		} catch (IOException e) {
 			Log.e(TAG, "muscles.xml parse: IOException", e);
@@ -53,7 +56,9 @@ public class MuscleLoader {
 			Log.e(TAG, "muscles.xml parse: ParserConfigurationException", e);
 		} catch (FactoryConfigurationError e) {
 			Log.e(TAG, "muscles.xml parse: FactoryConfigurationError", e);
-		}		
+		}finally{
+			mDb.endTransaction();
+		}
 	}
 	
 	private void doProcessMusclesXML(Node root) {

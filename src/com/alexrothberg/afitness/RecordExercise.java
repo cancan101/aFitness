@@ -8,11 +8,18 @@ import java.util.GregorianCalendar;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.os.Vibrator;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -94,8 +101,7 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 	private TextView weightEntryTxt;
 	private TextView repsEntryTxt;
 	
-	private View restTimerBtn;
-	//, historyBtn, recordDatebtn;
+	private Button restTimerBtn;
 	
 	private Long exercise_id;
 	private String exercise_name;
@@ -107,6 +113,8 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 	private int mDay;
 	
 	private static final int DATE_DIALOG_ID = 0;
+	
+	private CountDownTimer timer;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -137,14 +145,8 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
         weightEntryTxt = (TextView)findViewById(R.id.weightEntryTxt);
         repsEntryTxt = (TextView)findViewById(R.id.repsEntryTxt);
         
-        restTimerBtn = (View)findViewById(R.id.restTimerBtn);
+        restTimerBtn = (Button)findViewById(R.id.restTimerBtn);
         restTimerBtn.setOnClickListener(this);
-
-//        historyBtn = (ImageButton)findViewById(R.id.historyBtn);
-//        historyBtn.setOnClickListener(this);
-//        
-//        recordDatebtn = (ImageButton)findViewById(R.id.recordDatebtn);
-//        recordDatebtn.setOnClickListener(this);
         
         Bundle extras = getIntent().getExtras();
         exercise_id = extras.getLong(Exercises._ID);
@@ -191,7 +193,17 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
     
     private void setWorkoutInfo(float weight, int reps) {
     	repsEntryTxt.setText(Integer.toString(reps));
-    	weightEntryTxt.setText(Float.toString(weight));
+    	weightEntryTxt.setText(floatToString(weight));
+	}
+
+	private String floatToString(final float val_float) {
+		final int val_int = Math.round(val_float);
+		
+    	if (Math.abs(val_int - val_float) < 1e-6){
+    		return Integer.toString(val_int);
+    	}else{
+    		return Float.toString(val_float);
+    	}
 	}
 
 	@Override
@@ -218,15 +230,59 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 		if(v == recordBtn){
 			onRecordClick();
 		}else if(v == restTimerBtn){
-//	        Intent i = new Intent(this, ActivityList.class);
-//	        startActivity(i);
+			onTimerClick();
 		}
-//		else if(v==historyBtn){
-//	        showHistory();
-//		}else if(v==recordDatebtn){
-//			changeDate();
-//		}
 
+
+	}
+	
+	private long getTimerInterval(){
+		return 60;
+	}
+	
+
+	private void onTimerClick() {
+		final RecordExercise that = this;
+		if(timer == null){
+			timer = new CountDownTimer(getTimerInterval() * 1000, 450){
+				private long last = Long.MAX_VALUE;
+				@Override
+				public void onFinish() {
+					timer = null;
+//					Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+//					vibrator.vibrate(2000);
+					
+					NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+					
+					Notification notification = new Notification(android.R.drawable.stat_notify_sync_noanim, "Rest Complete", System.currentTimeMillis());
+					Intent notificationIntent = that.getIntent();
+					PendingIntent contentIntent = PendingIntent.getActivity(that, 0, notificationIntent, 0);
+					notification.setLatestEventInfo(getApplicationContext(), "Rest After Exercise Complete", "Select to return to " + that.exercise_name, contentIntent);
+					
+					notification.defaults |= Notification.DEFAULT_SOUND;
+					notification.defaults |= Notification.DEFAULT_VIBRATE;
+					notification.flags |= Notification.FLAG_AUTO_CANCEL;
+					
+					mNotificationManager.notify(1, notification);
+					resetTimer();
+				}
+	
+				@Override
+				public void onTick(long millisUntilFinished) {
+					final long seconds_left = millisUntilFinished/1000;
+					if(seconds_left != this.last){
+						restTimerBtn.setText(Long.toString(seconds_left));
+						last = seconds_left;
+					}
+				}			
+			};
+			timer.start();
+		}else{
+			timer.cancel();
+			resetTimer();
+			timer = null;
+		}
+		
 	}
 
 	private void showHistory() {
@@ -258,7 +314,7 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 				
 			long activity_id =  mDbHelper.recordActivity(exercise_id, record_date, reps, weight, units);
 			
-        	Toast toast = Toast.makeText(this, Float.toString(weight) + Utilities.getUnitLabel(units) + " for " + reps + " reps" , Toast.LENGTH_LONG);
+        	Toast toast = Toast.makeText(this, floatToString(weight) + Utilities.getUnitLabel(units) + " for " + reps + " reps" , Toast.LENGTH_SHORT);
         	toast.show();
         	
 			if(activity_id == -1){
@@ -376,6 +432,10 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 		}
 		return super.onContextItemSelected(item);
 
+	}
+
+	private void resetTimer() {
+		restTimerBtn.setText("Timer");
 	}
 	
 }

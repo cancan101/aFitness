@@ -1,11 +1,15 @@
 package com.alexrothberg.afitness;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -15,7 +19,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.AlphabetIndexer;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SectionIndexer;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,11 +68,10 @@ public class ActivityList extends ListActivity {
 		registerForContextMenu(getListView());
 
 		populateList();
-		
-		//ListView lv = getListView();
-		//lv.setFastScrollEnabled(true);
+		ListView lv = getListView();
 		//lv.setTextFilterEnabled(true);
-		
+		lv.setFastScrollEnabled(true);		
+
 	}
 
 
@@ -85,11 +91,12 @@ public class ActivityList extends ListActivity {
 			setTitle("All Exercises");			
 		}
 		startManagingCursor(c);
+		String[] from = { Exercises.KEY_NAME, Exercises.KEY_IMAGE };
+		int[] to = { R.id.std_list_item_name_txt, R.id.list_item_image };
 		
-		String[] from = { Exercises.KEY_NAME };
-		int[] to = { R.id.std_list_item_name_txt };
+		int exercise_name_index = c.getColumnIndex(Exercises.KEY_NAME);
 		
-		setListAdapter(new SimpleCursorAdapter(this, R.layout.std_list_item, c, from, to));
+		setListAdapter(new SimpleCursorAdapterAlphabetIndexer(this, R.layout.std_list_item_image, c, from, to, exercise_name_index));
 	}
 	
 
@@ -280,4 +287,71 @@ public class ActivityList extends ListActivity {
         return true;
     }	
 
+	private static class SimpleCursorAdapterAlphabetIndexer extends SimpleCursorAdapter implements SectionIndexer{
+		private final SectionIndexer alphabetIndexer;
+		private static final String alphabet = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		private final Context context;
+		
+		public SimpleCursorAdapterAlphabetIndexer(Context context, int layout, Cursor c, String[] from, int[] to, int sortedColumnIndex){
+			super(context, layout, c, from, to);
+			alphabetIndexer = new AlphabetIndexer(c, sortedColumnIndex, alphabet);
+			this.context=context;
+		}
+		
+
+		
+		/***
+		 * This cache never needs to be invalidated as long as the program runs
+		 */
+		private final static Map<String, Integer> resource_cache = new HashMap<String, Integer>();	
+		
+		@Override
+		public void setViewImage(ImageView v, String value) {
+			if(value == null){
+				v.setImageDrawable(null);
+				return;
+			}
+			
+			final int resource_id = getResourceFromName(value); 
+			if(resource_id != 0){
+				v.setImageResource(resource_id);
+			}else{
+				//super.setViewImage(v, value);
+				v.setImageDrawable(null);
+				return;
+			}
+		}
+		
+
+		private int getResourceFromName(String value) {
+			final Integer cached_value = resource_cache.get(value);
+			if(cached_value != null){
+				return cached_value;
+			}else{
+				final Integer ret =  context.getResources().getIdentifier(value + "_t", "drawable", "com.alexrothberg.afitness");
+				//Log.v(TAG, "resolving: " + value + "_t" +" to " + ret);
+				resource_cache.put(value, ret);
+				return ret;
+			}
+		}
+
+
+		@Override
+		public int getPositionForSection(int section) {
+			int ret = alphabetIndexer.getPositionForSection(section);
+			return ret;
+		}
+
+		@Override
+		public int getSectionForPosition(int position) {
+			return alphabetIndexer.getSectionForPosition(position);
+		}
+
+		@Override
+		public Object[] getSections() {
+			return alphabetIndexer.getSections();
+		}
+		
+	}
+	
 }

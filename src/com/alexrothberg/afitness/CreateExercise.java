@@ -202,7 +202,7 @@ public class CreateExercise extends Activity implements OnClickListener {
 	        	mDbHelper.recordPrimaryMuscle(exercise_id, muscle_id);
 	        	mDbHelper.recordMuscleGroup(exercise_id, muscleGroup_id);
 	        	
-	        	Toast toast = Toast.makeText(this, "Exercise Created: " + exercise_name_txt, Toast.LENGTH_LONG);
+	        	Toast toast = Toast.makeText(this, "Exercise Created: " + exercise_name, Toast.LENGTH_LONG);
 	        	toast.show();
 	        	
 	        }else{
