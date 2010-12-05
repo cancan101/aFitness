@@ -17,4 +17,9 @@
 		android:icon="@android:drawable/ic_menu_add"
 		android:visible="false"
 	/>
+	<item
+		android:id="@+id/record_exercise_menu_prefs"
+		android:title="Preferences"
+		android:icon="@android:drawable/ic_menu_preferences"
+	/>
 </menu>

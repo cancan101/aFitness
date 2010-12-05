@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="record_workout_preference_screen" android:title="baz">
+	<!--<EditTextPreference android:key="foo" android:title="title" />-->
+	<ListPreference android:key="default_units" android:entries="@array/unit_types" android:entryValues="@array/unit_types" android:title="Default Units"
+		android:defaultValue="Imperial" />
+	<CheckBoxPreference android:key="show_notes" android:title="Show Notes" android:defaultValue="false" />
+	<ListPreference android:key="set_rest_time" android:entries="@array/set_rests" android:entryValues="@array/set_rests" android:title="Set Rest Time"
+		android:defaultValue="60" />	
+</PreferenceScreen>

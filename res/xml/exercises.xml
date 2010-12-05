@@ -210,7 +210,7 @@ STEP 3. Pause, then slowly return to the starting position.
 			<Muscle name="Deltoids"/>
 		</MajorMuscles>
 		<SecondaryMuscles>
-			<Muscle name="Triceps"/>
+			<Muscle name="Triceps Brachii"/>
 		</SecondaryMuscles>
 		<difficulty>
 			Intermediate
@@ -1255,7 +1255,7 @@ STEP 3. Pause at the bottom, then push yourself back to the starting position. D
 			<Muscle name="Rectus Abdominis"/>
 		</MajorMuscles>
 		<SecondaryMuscles>
-			<Muscle name="Oliques"/>
+			<Muscle name="Obliques"/>
 		</SecondaryMuscles>
 		<difficulty>
 			Intermediate
@@ -2551,7 +2551,7 @@ STEP 3. Pause, then push yourself back to the starting position.
 		</MajorMuscles>
 		<SecondaryMuscles>
 			<Muscle name="Deltoids"/>
-			<Muscle name="Triceps"/>
+			<Muscle name="Triceps Brachii"/>
 		</SecondaryMuscles>
 		<difficulty>
 			Intermediate
@@ -2766,7 +2766,7 @@ STEP 3. Allow your knees to bend 45 degrees when you land, then immediately jump
 		</MajorMuscles>
 		<SecondaryMuscles>
 			<Muscle name="glutes"/>
-			<Muscle name="guadriceps"/>
+			<Muscle name="Quadriceps"/>
 		</SecondaryMuscles>
 		<difficulty>
 			Advanced
@@ -3818,7 +3818,7 @@ STEP 3. Pause at the bottom, then slowly straighten back to the starting positio
 			<Muscle name="Pectoralis"/>
 		</MajorMuscles>
 		<SecondaryMuscles>
-			<Muscle name="Triceps"/>
+			<Muscle name="Triceps Brachii"/>
 			<Muscle name="Deltoids"/>
 		</SecondaryMuscles>
 		<difficulty>
@@ -4931,7 +4931,7 @@ STEP 4. Slowly extend your arms back up, stretching fully and keeping your &quot
 			<Muscle name="Deltoids"/>
 		</MajorMuscles>
 		<SecondaryMuscles>
-			<Muscle name="Rotatory Cuff"/>
+			<Muscle name="Rotator Cuff"/>
 		</SecondaryMuscles>
 		<difficulty>
 			Beginner
@@ -5534,7 +5534,7 @@ STEP 5.  Repeat.
 	</Exercise>
 	<Exercise name="prone hammer curl">
 		<MajorMuscles>
-			<Muscle name="Biceps"/>
+			<Muscle name="Biceps Brachii"/>
 		</MajorMuscles>
 		<SecondaryMuscles>
 			<Muscle name="Wrist Flexors"/>
@@ -6517,7 +6517,7 @@ Variations: Changing your grip from neutral to under-hand-grip directs the worko
 	</Exercise>
 	<Exercise name="seated triceps extension">
 		<MajorMuscles>
-			<Muscle name="Triceps"/>
+			<Muscle name="Triceps Brachii"/>
 		</MajorMuscles>
 		<SecondaryMuscles>
 			<Muscle name="Deltoids"/>
@@ -6696,7 +6696,7 @@ STEP 3. Push through your left heel to return to the starting position, then imm
 	</Exercise>
 	<Exercise name="single-arm external rotation">
 		<MajorMuscles>
-			<Muscle name="Teres Minor"/>
+			<Muscle name="Rotator Cuff"/>
 		</MajorMuscles>
 		<SecondaryMuscles>
 			<Muscle name="Deltoids"/>
@@ -7238,7 +7238,7 @@ STEP 3. Pause, and slowly return to the starting position while making sure that
 			<Muscle name="Glutes"/>
 		</MajorMuscles>
 		<SecondaryMuscles>
-			<Muscle name="Oliques"/>
+			<Muscle name="Obliques"/>
 			<Muscle name="Lower Back"/>
 		</SecondaryMuscles>
 		<difficulty>
@@ -7609,7 +7609,7 @@ STEP 2. With your feet shoulder-width apart, push to lift your hips until they a
 	</Exercise>
 	<Exercise name="swiss-ball pullover">
 		<MajorMuscles>
-			<Muscle name="Pectoralis Major"/>
+			<Muscle name="Pectoralis"/>
 		</MajorMuscles>
 		<SecondaryMuscles>
 			<Muscle name="Latissimus Dorsi"/>
@@ -7778,7 +7778,7 @@ STEP 3. Pause for 1-2 seconds, then slowly lower your shoulders down as far as p
 	</Exercise>
 	<Exercise name="swiss-ball split squat">
 		<MajorMuscles>
-			<Muscle name="Glues"/>
+			<Muscle name="Glutes"/>
 		</MajorMuscles>
 		<SecondaryMuscles>
 			<Muscle name="Quadriceps"/>
@@ -8165,7 +8165,7 @@ STEP 3. Lower your hips back to the ground and repeat the motion but twist to th
 			<Muscle name="Deltoids"/>
 		</MajorMuscles>
 		<SecondaryMuscles>
-			<Muscle name="Tapezius"/>
+			<Muscle name="Trapezius"/>
 			<Muscle name="Obliques"/>
 		</SecondaryMuscles>
 		<difficulty>
@@ -8340,7 +8340,7 @@ STEP 3. Pull the bar upward until your upper arms are parallel to the floor. Do 
 			<Muscle name="Rectus Abdominis"/>
 		</MajorMuscles>
 		<SecondaryMuscles>
-			<Muscle name="Oliques"/>
+			<Muscle name="Obliques"/>
 		</SecondaryMuscles>
 		<difficulty>
 			Intermediate
@@ -8456,7 +8456,7 @@ STEP 3. When the weight reaches the outside of your left ankle, reverse the moti
 	</Exercise>
 	<Exercise name="weighted crunch">
 		<MajorMuscles>
-			<Muscle name="Rectus Adominis"/>
+			<Muscle name="Rectus Abdominis"/>
 		</MajorMuscles>
 		<SecondaryMuscles>
 			<Muscle name="Obliques"/>
