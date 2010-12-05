@@ -1,6 +1,7 @@
 package com.alexrothberg.afitness;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import android.content.ContentValues;
@@ -173,7 +174,7 @@ public class DbAdapter {
 	}
 
     public static final String DATABASE_NAME = "data";
-    public static final int DATABASE_VERSION = 36;
+    public static final int DATABASE_VERSION = 41;
     
     private static final String TAG = "DbAdapter";
     
@@ -224,13 +225,14 @@ public class DbAdapter {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
             
-            if(oldVersion >= 15 && oldVersion <= 31){
+            if(oldVersion >= 15 && oldVersion <= 40){
             	if(oldVersion<=31){
             		db.execSQL(Exercises.DATABSE_ADD_IMAGE);
             	}
             	noDrop(db);
             }else{
-            	drop(db);
+            	throw new RuntimeException("Bad versions!");
+//            	drop(db);
             }         
             
             			
@@ -291,17 +293,19 @@ public class DbAdapter {
 			return ret;
 		}
 		
-		public static long getMuscleFromName(String muscle_name, SQLiteDatabase db){
+		public static long getMuscleFromName(final String muscle_name, final SQLiteDatabase db){
 			return containsMuscle( muscle_name, -1, db);
 		}
 		
 		private static Map<String, Long> muscle_name_cache = new HashMap<String, Long>();		
 		public static long containsMuscle(final String muscle_name, long muscleGroup_id, final SQLiteDatabase db){
-			Long cached_value = muscle_name_cache.get(muscle_name);
+			final Long cached_value = muscle_name_cache.get(muscle_name);
 			if(cached_value != null){
+				Log.v(TAG,"hit: " + muscle_name +"=" + cached_value);
 				return cached_value;
-			}else{			
-				final Cursor c = db.query(Muscles.DATABASE_TABLE, new String[]{ Muscles._ID, Muscles.KEY_MUSCLE_GROUP_ID}, Muscles.KEY_NAME + "=?", new String[]{muscle_name}, null, null, null);
+			}else{
+				Log.v(TAG,"nohit: " + muscle_name);
+				final Cursor c = db.query(Muscles.DATABASE_TABLE, new String[]{ Muscles._ID, Muscles.KEY_MUSCLE_GROUP_ID}, "UPPER(" + Muscles.KEY_NAME + ")=?", new String[]{muscle_name.toUpperCase()}, null, null, null);
 				final int count = c.getCount();
 				
 				assert(count <= 1);
@@ -317,7 +321,9 @@ public class DbAdapter {
 					ret = c.getLong(0); //We can hardcode the index here
 				}
 				c.deactivate();
-				muscle_name_cache.put(muscle_name, ret);
+				if(ret != -1){
+					muscle_name_cache.put(muscle_name, ret);
+				}
 				return ret;
 			}
 		}
@@ -382,23 +388,91 @@ public class DbAdapter {
 			//TODO
 			return 0L;
 		}
-		
+
+		private static long exerciseContainsMuscleGroup(long exercise, long muscleGroup, SQLiteDatabase db){
+			final Cursor cursor = db.query(
+					ExerciseMuscleGroups.DATABASE_TABLE,
+					new String[]{ ExerciseMuscleGroups._ID },
+					ExerciseMuscleGroups.KEY_EXERCISE + "=?" + 
+						"AND " + ExerciseMuscleGroups.KEY_MUSCLE_GROUP + "=?",
+					new String[]{ 	
+									Long.toString(exercise), 
+									Long.toString(muscleGroup) 
+								}, 
+					null, // groupBy
+					null, //having
+					null //orderBy
+					);
+			
+			final long ret;
+			if (!cursor.moveToFirst()){
+				ret = 0;
+			}else{
+				ret = cursor.getLong(0);
+				if (cursor.moveToNext()){
+					Log.v(TAG, "exerciseContainsMuscleGroup: containts multiple entries");
+				}
+			}
+			cursor.deactivate();
+			return ret;			
+		}
 		
 		public static long recordMuscleGroup(long exercise, long muscleGroup_id, SQLiteDatabase db){
-	    	 values.clear();
-	    	 values.put(ExerciseMuscleGroups.KEY_EXERCISE, exercise);
-	    	 values.put(ExerciseMuscleGroups.KEY_MUSCLE_GROUP, muscleGroup_id);
-
-	    	 return db.insert(ExerciseMuscleGroups.DATABASE_TABLE, null, values);			
+			if (muscleGroup_id <=0){
+				throw new RuntimeException("muscleGroup_id=" + muscleGroup_id);
+			}
+			final long existing = exerciseContainsMuscleGroup(exercise, muscleGroup_id, db);
+			if (existing > 0){
+				return existing;
+			}
+			
+			values.clear();
+			values.put(ExerciseMuscleGroups.KEY_EXERCISE, exercise);
+			values.put(ExerciseMuscleGroups.KEY_MUSCLE_GROUP, muscleGroup_id);
+		
+			return db.insert(ExerciseMuscleGroups.DATABASE_TABLE, null, values);			
 		}
 
-		public static long recordMuscle(long exercise, long muscle, boolean isPrimary, SQLiteDatabase db){	    	 
-	    	 values.clear();
-	    	 values.put(ExerciseMuscles.KEY_EXERCISE, exercise);
-	    	 values.put(ExerciseMuscles.KEY_MUSCLE, muscle);
-	    	 values.put(ExerciseMuscles.KEY_ISPRIMARY, isPrimary);
-	    	 
-	    	 return db.insert(ExerciseMuscles.DATABASE_TABLE, null, values);			
+		private static long exerciseContainsMuscle(long exercise, long muscle, SQLiteDatabase db){
+			final Cursor cursor = db.query(
+					ExerciseMuscles.DATABASE_TABLE,
+					new String[]{ ExerciseMuscles._ID },
+						ExerciseMuscles.KEY_EXERCISE + "=?" + 
+						"AND " + ExerciseMuscles.KEY_MUSCLE + "=?",
+					new String[]{ 	
+									Long.toString(exercise), 
+									Long.toString(muscle) 
+								}, 
+					null, // groupBy
+					null, //having
+					null //orderBy
+					);
+			
+			final long ret;
+			if (!cursor.moveToFirst()){
+				ret = 0;
+			}else{
+				ret = cursor.getLong(0);
+				if (cursor.moveToNext()){
+					Log.v(TAG, "exerciseContainsMuscle: containts multiple entries");
+				}
+			}
+			cursor.deactivate();
+			return ret;			
+		}
+		
+		public static long recordMuscle(long exercise, long muscle, boolean isPrimary, SQLiteDatabase db){
+			final long existing = exerciseContainsMuscle(exercise, muscle, db);
+			if (existing > 0){
+				return existing;
+			}
+			
+			values.clear();
+			values.put(ExerciseMuscles.KEY_EXERCISE, exercise);
+			values.put(ExerciseMuscles.KEY_MUSCLE, muscle);
+			values.put(ExerciseMuscles.KEY_ISPRIMARY, isPrimary);
+			 
+			return db.insert(ExerciseMuscles.DATABASE_TABLE, null, values);			
 		}
 		
 		public static long recordSecondaryMuscle(long exercise, long muscle, SQLiteDatabase db){
@@ -406,8 +480,7 @@ public class DbAdapter {
 		}
 		
 		public static long recordPrimaryMuscle(long exercise, long muscle, SQLiteDatabase db){
-			return recordMuscle(exercise, muscle, true, db);
-			
+			return recordMuscle(exercise, muscle, true, db);			
 		}
 		
 		
@@ -478,10 +551,11 @@ public class DbAdapter {
 	    		ret = -1;
 	    	}else{
 	    		cursor.moveToFirst();
-	    		ret = cursor.getLong(0);	    		
+	    		ret = cursor.getLong(0);	
+	    		muscle_to_group_cache.put(muscle_id, ret);
 	    	}
 	    	cursor.deactivate();
-	    	muscle_to_group_cache.put(muscle_id, ret);
+	    	
 	    	return ret;
 	    }
 
@@ -596,7 +670,21 @@ public class DbAdapter {
     public Cursor fetchExercisesForWorkout(long workout_id){
 		SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 		builder.setTables(WorkoutExercises.DATABASE_TABLE + " we join " + Exercises.DATABASE_TABLE + " e on we." + WorkoutExercises.KEY_EXERCISE + " = e." + Exercises._ID);
-		return builder.query(mDb, new String[] {"e." + Exercises._ID + " as " + Exercises._ID, "we." + WorkoutExercises._ID + " as " + ENTRY_ID, "we." + WorkoutExercises.KEY_EXERCISE + " as " + WorkoutExercises.KEY_EXERCISE, "e." + Exercises.KEY_NAME + " as " + Exercises.KEY_NAME}, "we." + WorkoutExercises.KEY_WORKOUT + "=" + workout_id, null, null, null, null);
+		return builder.query(
+				mDb, 
+				new String[] {
+							"e." + Exercises._ID + " as " + Exercises._ID, 
+							"we." + WorkoutExercises._ID + " as " + ENTRY_ID, 
+							"we." + WorkoutExercises.KEY_EXERCISE + " as " + WorkoutExercises.KEY_EXERCISE, 
+							"e." + Exercises.KEY_NAME + " as " + Exercises.KEY_NAME,
+							Exercises.KEY_IMAGE
+						}, 
+						"we." + WorkoutExercises.KEY_WORKOUT + "=?", 
+						new String[]{ Long.toString(workout_id) }, 
+						null, 
+						null, 
+						null
+						);
     }
     
     public long createExercise(String name){
@@ -624,7 +712,8 @@ public class DbAdapter {
 					"e." + Exercises._ID + " as " + Exercises._ID, 
 					"emg." + ExerciseMuscleGroups.KEY_EXERCISE + " as " + ExerciseMuscleGroups.KEY_EXERCISE, 
 					"e." + Exercises.KEY_NAME + " as " + Exercises.KEY_NAME,
-					Exercises.KEY_NAME
+					Exercises.KEY_NAME,
+					Exercises.KEY_IMAGE,
 				}, 
 				"emg." + ExerciseMuscleGroups.KEY_MUSCLE_GROUP + "=?", 
 				new String[]{Long.toString(musclegroup_id)}, 
@@ -643,7 +732,8 @@ public class DbAdapter {
 						"e." + Exercises._ID + " as " + Exercises._ID, 
 						"em." + ExerciseMuscles.KEY_EXERCISE + " as " + ExerciseMuscles.KEY_EXERCISE, 
 						"e." + Exercises.KEY_NAME + " as " + Exercises.KEY_NAME,
-						Exercises.KEY_NAME
+						Exercises.KEY_NAME,
+						Exercises.KEY_IMAGE,
 				}, 
 				"em." + ExerciseMuscles.KEY_MUSCLE + " = ?", 
 				new String[]{Long.toString(muscle_id)}, 
@@ -830,6 +920,66 @@ public class DbAdapter {
     			null, //having
     			"min( a." + Activities._ID + " ) asc" //orderBy
     			);
+	}
+	
+	public Cursor getMgDupes() {
+		final String sql = "SELECT "+ " MAX(" + ExerciseMuscleGroups._ID + ") as _id ,"  + ExerciseMuscleGroups.KEY_EXERCISE + ", " + ExerciseMuscleGroups.KEY_MUSCLE_GROUP + ", COUNT(*) as COUNT FROM " + ExerciseMuscleGroups.DATABASE_TABLE + " GROUP BY " + ExerciseMuscleGroups.KEY_EXERCISE + ", " + ExerciseMuscleGroups.KEY_MUSCLE_GROUP + " HAVING COUNT(*) > 1";
+    	final Cursor cursor = mDb.rawQuery(sql, null);
+    	return cursor;
+	}
+	
+
+	
+	public Cursor getBadMg() {
+		final String sql = "SELECT " +ExerciseMuscleGroups._ID   +", "+  ExerciseMuscleGroups.KEY_MUSCLE_GROUP + " FROM " + ExerciseMuscleGroups.DATABASE_TABLE + " WHERE " + ExerciseMuscleGroups.KEY_MUSCLE_GROUP + " <= 0";
+    	final Cursor cursor = mDb.rawQuery(sql, null);
+    	return cursor;
+	}
+	
+	
+	
+	public Cursor getMDupes() {
+		final String sql = "SELECT "+ " MAX(" + ExerciseMuscles._ID + ") as _id ,"  + ExerciseMuscles.KEY_EXERCISE + ", " + ExerciseMuscles.KEY_MUSCLE  + ", COUNT(*) as COUNT FROM " + ExerciseMuscles.DATABASE_TABLE + " GROUP BY " + ExerciseMuscles.KEY_EXERCISE + ", " + ExerciseMuscles.KEY_MUSCLE + " HAVING COUNT(*) > 1";
+    	final Cursor cursor = mDb.rawQuery(sql, null);
+    	return cursor;
+	}
+	
+	public Cursor getBadM() {
+		final String sql = "SELECT " +ExerciseMuscles._ID   +", "+  ExerciseMuscles.KEY_MUSCLE + " FROM " + ExerciseMuscles.DATABASE_TABLE + " WHERE " + ExerciseMuscles.KEY_MUSCLE + " <= 0";
+    	final Cursor cursor = mDb.rawQuery(sql, null);
+    	return cursor;
+	}
+
+	public int deleteDuplicateMG(){
+		int ret =0;
+		final Cursor dupes = getMgDupes();
+		int id_pos = dupes.getColumnIndex(ExerciseMuscleGroups._ID);
+		while(dupes.moveToNext()){
+			ret += mDb.delete(ExerciseMuscleGroups.DATABASE_TABLE, ExerciseMuscleGroups._ID + "=?", new String[]{ Long.toString(dupes.getLong(id_pos)) }); 
+		}
+		dupes.close();
+		return ret;
+	}
+	
+	public int deleteDuplicateM(){
+		int ret =0;
+		final Cursor dupes = getMDupes();
+		int id_pos = dupes.getColumnIndex(ExerciseMuscles._ID);
+		while(dupes.moveToNext()){
+			ret += mDb.delete(ExerciseMuscles.DATABASE_TABLE, ExerciseMuscles._ID + "=?", new String[]{ Long.toString(dupes.getLong(id_pos)) }); 
+		}
+		dupes.close();
+		return ret;
+	}
+	
+	public Long getPrimaryMuscleForExercise(Long exerciseId) {
+		return 0L;
+		
+	}
+
+	public List<Long> getSecondaryMusclesForExercise(Long exerciseId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -1,6 +1,8 @@
 package com.alexrothberg.afitness;
 
 
+import java.util.List;
+
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -55,14 +57,13 @@ public class CreateExercise extends Activity implements OnClickListener {
 	        	exercise_name = extras.getString(Exercises.KEY_NAME);
 	        	requested_mg = extras.getLong(MUSCLE_GROUP_PREFIX + ":" + MuscleGroups._ID);
 	        	requested_muscle = extras.getLong(MUSCLE_PREFIX + ":" + Muscles._ID);
-	        }else{
-	        	setTitle("New Exercise");
-	        	// We are creating new exercise
 	        }
         }
 		
-		assert(exercise_id==null);
-
+		if(exercise_id !=null && exercise_id!=0L){
+			assert(exercise_name!=null);		
+		}
+		
 		dbAdapter = new DbAdapter(this);
 		dbAdapter.open();
 		
@@ -88,14 +89,8 @@ public class CreateExercise extends Activity implements OnClickListener {
 		
 		exercise_name_txt = (EditText)findViewById(R.id.exercise_create_name);
 		
-		exercise_name_txt.setText(exercise_name);
 
-		if (!TextUtils.isEmpty(exercise_name)){
-			setTitle("Editing: " + exercise_name);
-		}else{
-			cancel_btn.setVisibility(Button.INVISIBLE);
-			save_btn.setText("Create");
-		}
+
 
 		muscle_group_spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -110,22 +105,43 @@ public class CreateExercise extends Activity implements OnClickListener {
 			}
 		});
 		
+		if (!TextUtils.isEmpty(exercise_name)){
+			setupExitExistingExercise();
+		}else{
+			setupNewExercise();			
+		}
+		
+	}
+
+	private void setupExitExistingExercise() {
+		assert exercise_id != null && exercise_id!=0L;
+		setTitle("Editing: " + exercise_name);
+		exercise_name_txt.setText(exercise_name);
+		
+		Long primary_muscleId = dbAdapter.getPrimaryMuscleForExercise(exercise_id);
+		List<Long> secondary_muscleId = dbAdapter.getSecondaryMusclesForExercise(exercise_id);
+	}
+
+	private void setupNewExercise() {
+		cancel_btn.setVisibility(Button.INVISIBLE);
+		save_btn.setText("Create");
+		setTitle("New Exercise");
+
 		if(requested_muscle != 0L && requested_mg == 0L){
 			Log.v(TAG, "requested_muscle provided but no requested_mg. Looking up mg.");
 			requested_mg = dbAdapter.getMuscleGroupForMuscle(requested_muscle);
 		}
 		
-		Log.v(TAG, "requested_mg=" + requested_mg);
-		Log.v(TAG, "requested_muscle=" + requested_muscle);
-		if(requested_mg != 0L){			
+		if(requested_mg != 0L){
+//			Log.v(TAG, "requested_mg=" + requested_mg);
+//			Log.v(TAG, "requested_muscle=" + requested_muscle);
+			
 			selectMuscleGroup(requested_mg);
 			setMuscleSpinner(requested_mg);
 			if(requested_muscle != 0L){
 				selectMuscle(requested_muscle);				
-			}
-			
+			}			
 		}
-		
 	}
 
 	private void selectMuscle(long requestedMuscle) {
@@ -190,17 +206,24 @@ public class CreateExercise extends Activity implements OnClickListener {
 			DbAdapter mDbHelper = new DbAdapter(this);
 	        mDbHelper.open();
 	        if (exercise_id == null || exercise_id==0L){
+	        	
+	        	long muscle_id = muscle_spinner.getSelectedItemId();
+	        	assert(muscle_id != Spinner.INVALID_ROW_ID);	        	
+	        	assert(muscle_id > 0);
+	        	
+	        	long muscleGroup_id = muscle_group_spinner.getSelectedItemId();
+	        	assert(muscleGroup_id != Spinner.INVALID_ROW_ID);
+	        	assert(muscleGroup_id > 0);
+	        	
+	        	
 	        	long exercise_id = mDbHelper.createExercise(exercise_name);
 	        	assert(exercise_id > 0);
 	        	
-	        	long muscle_id = muscle_spinner.getSelectedItemId();
-	        	assert(muscle_id != Spinner.INVALID_ROW_ID);
-
-	        	long muscleGroup_id = muscle_group_spinner.getSelectedItemId();
-	        	assert(muscleGroup_id != Spinner.INVALID_ROW_ID);
+	        	long pm_id = mDbHelper.recordPrimaryMuscle(exercise_id, muscle_id);
+	        	assert(pm_id > 0);
 	        	
-	        	mDbHelper.recordPrimaryMuscle(exercise_id, muscle_id);
-	        	mDbHelper.recordMuscleGroup(exercise_id, muscleGroup_id);
+	        	long mg_id = mDbHelper.recordMuscleGroup(exercise_id, muscleGroup_id);
+	        	assert(mg_id > 0);
 	        	
 	        	Toast toast = Toast.makeText(this, "Exercise Created: " + exercise_name, Toast.LENGTH_LONG);
 	        	toast.show();

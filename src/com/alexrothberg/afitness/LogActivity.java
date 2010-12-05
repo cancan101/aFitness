@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.BaseColumns;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,6 +30,8 @@ public class LogActivity extends ListActivity {
 	
 	private Cursor allWorkoutDates, allEercises;
 	
+	private static final String TAG = "LogActivity";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -37,9 +40,10 @@ public class LogActivity extends ListActivity {
 		adapter.open();
 		
 		goDateMode();
+		((MainUI)getParent()).registerLogActivity(this);
 	}
 
-	private void goDateMode() {
+	public void goDateMode() {
 		state = STATE.DATES;
 		showDates();
 	}

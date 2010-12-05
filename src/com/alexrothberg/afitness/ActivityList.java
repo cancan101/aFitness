@@ -43,6 +43,10 @@ public class ActivityList extends ListActivity {
 	private int requestCode;
 	
 	private static final int REQUEST_CODE_CREATE_EXERCISE = 1;
+	private static final int REQUEST_CODE_EDIT_EXERCISE = 2;
+	
+	private static final String[] from = { Exercises.KEY_NAME, Exercises.KEY_IMAGE };
+	private static final int[] to = { R.id.std_list_item_name_txt, R.id.list_item_image };
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +95,6 @@ public class ActivityList extends ListActivity {
 			setTitle("All Exercises");			
 		}
 		startManagingCursor(c);
-		String[] from = { Exercises.KEY_NAME, Exercises.KEY_IMAGE };
-		int[] to = { R.id.std_list_item_name_txt, R.id.list_item_image };
 		
 		int exercise_name_index = c.getColumnIndex(Exercises.KEY_NAME);
 		
@@ -114,7 +116,6 @@ public class ActivityList extends ListActivity {
 	private void viewExercise(int position, long id) {
 		Intent intent = new Intent(this, RecordExercise.class);
 		intent.putExtra(Exercises._ID, id);
-		Log.v(TAG, getListView().getItemAtPosition(position).toString());
 		
         Cursor cursor = (Cursor) getListAdapter().getItem(position);
         if (cursor == null) {
@@ -172,9 +173,27 @@ public class ActivityList extends ListActivity {
 		startActivityForResult(intent, REQUEST_CODE_CREATE_EXERCISE);
 	}
 	
+	private void editExercise(long exerciseId, String exerciseName) {
+		Intent intent = new Intent(this, CreateExercise.class);
+		
+		if(muscleGroupId != 0L){
+			intent.putExtra(CreateExercise.MUSCLE_GROUP_PREFIX +":" + MuscleGroups._ID, muscleGroupId);
+		}
+		
+		if(muscleId != 0L){
+			intent.putExtra(CreateExercise.MUSCLE_PREFIX +":" + Muscles._ID, muscleId);
+		}
+		
+		intent.putExtra(Exercises._ID, exerciseId);
+		intent.putExtra(Exercises.KEY_NAME, exerciseName);
+		
+		startActivityForResult(intent, REQUEST_CODE_EDIT_EXERCISE);
+	}
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch(requestCode){
+			case REQUEST_CODE_EDIT_EXERCISE:
 			case REQUEST_CODE_CREATE_EXERCISE:
 				if(resultCode == RESULT_OK){
 					populateList();
@@ -251,6 +270,13 @@ public class ActivityList extends ListActivity {
 			case R.id.activity_list_context_delete:
 				deleteWorkoutExercise(info.position, info.id);
 				return true;
+			case R.id.activity_list_context_edit:
+		        final String exerciseName = getExerciseNameFromPosition(info.position);
+		        if(exerciseName == null){
+		        	return false;
+		        }				
+				editExercise(info.id, exerciseName);
+				return true;				
 		}
 		return super.onContextItemSelected(item);
 	}
@@ -287,71 +313,6 @@ public class ActivityList extends ListActivity {
         return true;
     }	
 
-	private static class SimpleCursorAdapterAlphabetIndexer extends SimpleCursorAdapter implements SectionIndexer{
-		private final SectionIndexer alphabetIndexer;
-		private static final String alphabet = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		private final Context context;
-		
-		public SimpleCursorAdapterAlphabetIndexer(Context context, int layout, Cursor c, String[] from, int[] to, int sortedColumnIndex){
-			super(context, layout, c, from, to);
-			alphabetIndexer = new AlphabetIndexer(c, sortedColumnIndex, alphabet);
-			this.context=context;
-		}
-		
 
-		
-		/***
-		 * This cache never needs to be invalidated as long as the program runs
-		 */
-		private final static Map<String, Integer> resource_cache = new HashMap<String, Integer>();	
-		
-		@Override
-		public void setViewImage(ImageView v, String value) {
-			if(value == null){
-				v.setImageDrawable(null);
-				return;
-			}
-			
-			final int resource_id = getResourceFromName(value); 
-			if(resource_id != 0){
-				v.setImageResource(resource_id);
-			}else{
-				//super.setViewImage(v, value);
-				v.setImageDrawable(null);
-				return;
-			}
-		}
-		
-
-		private int getResourceFromName(String value) {
-			final Integer cached_value = resource_cache.get(value);
-			if(cached_value != null){
-				return cached_value;
-			}else{
-				final Integer ret =  context.getResources().getIdentifier(value + "_t", "drawable", "com.alexrothberg.afitness");
-				//Log.v(TAG, "resolving: " + value + "_t" +" to " + ret);
-				resource_cache.put(value, ret);
-				return ret;
-			}
-		}
-
-
-		@Override
-		public int getPositionForSection(int section) {
-			int ret = alphabetIndexer.getPositionForSection(section);
-			return ret;
-		}
-
-		@Override
-		public int getSectionForPosition(int position) {
-			return alphabetIndexer.getSectionForPosition(position);
-		}
-
-		@Override
-		public Object[] getSections() {
-			return alphabetIndexer.getSections();
-		}
-		
-	}
 	
 }

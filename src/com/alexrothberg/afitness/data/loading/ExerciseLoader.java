@@ -214,8 +214,14 @@ public class ExerciseLoader {
 
 	private void recordMuscle(final long exercise_id, final boolean primary, final String muscle_name) {
 		final long muscle_id = DbAdapter.DatabaseHelper.getMuscleFromName(muscle_name, this.mDb);
+		if (muscle_id <= 0){
+			Log.e(TAG, muscle_name + "=" + muscle_id);
+		}
 		assert(muscle_id > 0);
 		final long muscleGroup = DbAdapter.DatabaseHelper.getMuscleGroupForMuscle(muscle_id, this.mDb);
+		if (muscleGroup < 0){
+			Log.e(TAG, "muscleGroup for " + muscle_name + "=" + muscleGroup);
+		}
 		assert(muscleGroup > 0);
 		
 		DbAdapter.DatabaseHelper.recordMuscle(exercise_id, muscle_id, primary, mDb);

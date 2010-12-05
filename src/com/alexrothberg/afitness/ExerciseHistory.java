@@ -163,7 +163,7 @@ public class ExerciseHistory extends ListActivity {
 			builder.append("Set " + (position+1) + ": "); 
 			Cursor c = getCursor();
 
-			builder.append(Float.toString(c.getFloat(c.getColumnIndex(Activities.KEY_WEIGHT))));
+			builder.append(Utilities.floatToString(c.getFloat(c.getColumnIndex(Activities.KEY_WEIGHT))));
 			
 			int units = c.getInt(c.getColumnIndex(Activities.KEY_UNITS));
 			

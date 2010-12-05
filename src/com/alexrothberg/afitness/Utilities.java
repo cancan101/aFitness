@@ -76,6 +76,16 @@ public final class Utilities {
 		default:
 			return units.name();
 		}
-	}	
+	}
+	
+	public static String floatToString(final float val_float) {
+		final int val_int = Math.round(val_float);
+		
+    	if (Math.abs(val_int - val_float) < 1e-6){
+    		return Integer.toString(val_int);
+    	}else{
+    		return Float.toString(val_float);
+    	}
+	}
 	
 }

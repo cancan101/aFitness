@@ -28,8 +28,11 @@ public class WorkoutExercisesList extends ListActivity {
 	
 	private static final String TAG = "WorkoutExercisesList";
 	
-	private static final String[] from = { Exercises.KEY_NAME };
-	private static final int[] to = { R.id.std_list_item_name_txt };
+//	private static final String[] from = { Exercises.KEY_NAME };
+//	private static final int[] to = { R.id.std_list_item_name_txt };
+
+	private static final String[] from = { Exercises.KEY_NAME, Exercises.KEY_IMAGE };
+	private static final int[] to = { R.id.std_list_item_name_txt, R.id.list_item_image };
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +77,7 @@ public class WorkoutExercisesList extends ListActivity {
 		startManagingCursor(exercises);		
 
 		
-		ListAdapter adapter = new SimpleCursorAdapter(this, R.layout.std_list_item, exercises, from, to);
+		ListAdapter adapter = new SimpleCursorAdapterImage(this, R.layout.std_list_item_image, exercises, from, to);
 		
 		setListAdapter(adapter);
 	}
