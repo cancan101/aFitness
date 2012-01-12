@@ -265,6 +265,9 @@ STEP 3. Slowly press yourself back up until your left leg is straight once more,
 		<type>
 			dumbbell
 		</type>
+		<video>
+			assisted_dumbbell_lunge.mp4
+		</video>
 	</Exercise>
 	<Exercise name="assisted pull-up">
 		<MajorMuscles>
@@ -1107,6 +1110,9 @@ STEP 3. Push off of your bent foot to return to starting position and repeat. To
 		<type>
 			bosu
 		</type>
+		<video>
+			bosu_crossover_lunge.mp4
+		</video>
 	</Exercise>
 	<Exercise name="bosu crunch">
 		<MajorMuscles>
@@ -1132,6 +1138,9 @@ STEP 3. Lower to the starting position and repeat.
 		<type>
 			bosu
 		</type>
+		<video>
+			bosu_crunch.mp4
+		</video>
 	</Exercise>
 	<Exercise name="bosu jump squat">
 		<MajorMuscles>
@@ -1249,6 +1258,9 @@ STEP 3. Pause at the bottom, then push yourself back to the starting position. D
 		<type>
 			bosu
 		</type>
+		<video>
+			bosu_pushup.mp4
+		</video>
 	</Exercise>
 	<Exercise name="bosu russian twist">
 		<MajorMuscles>
@@ -2268,6 +2280,9 @@ STEP 4. Keep alternating legs while keeping your head elevated. When done, lower
 		<type>
 			dumbbell
 		</type>
+		<video>
+			cycle_crunch.mp4
+		</video>
 	</Exercise>
 	<Exercise name="dead lift">
 		<MajorMuscles>
@@ -2458,6 +2473,9 @@ STEP 2. Lower your body until your chest nearly touches the floor, pause, then p
 		<type>
 			none
 		</type>
+		<video>
+			decline_pushup.mp4
+		</video>
 	</Exercise>
 	<Exercise name="decline twisting ab crunch">
 		<MajorMuscles>
@@ -2638,6 +2656,9 @@ STEP 4. Slowly lower the weights back down along the sides of your chest and rep
 		<type>
 			dumbbell
 		</type>
+		<video>
+			dumbbell_bench_press.mp4
+		</video>
 	</Exercise>
 	<Exercise name="dumbbell bench twist">
 		<MajorMuscles>
@@ -2665,6 +2686,9 @@ STEP 3. Slowly turn your torso to your left, then lower yourself back down. Repe
 		<type>
 			dumbbell
 		</type>
+		<video>
+			dumbbell_bench_twist.mp4
+		</video>
 	</Exercise>
 	<Exercise name="dumbbell bent-over row">
 		<MajorMuscles>
@@ -2787,6 +2811,9 @@ STEP 3. Pause, then reverse the motion and return the weights slowly to the floo
 		<type>
 			dumbbell
 		</type>
+		<video>
+			dumbbell_deadlift.mp4
+		</video>
 	</Exercise>
 	<Exercise name="dumbbell flye">
 		<MajorMuscles>
@@ -2970,6 +2997,9 @@ STEP 3. Pause, then slowly lower your legs back down but stop before the weight 
 		<type>
 			dumbbell
 		</type>
+		<video>
+			dumbbell_leg_lift.mp4
+		</video>
 	</Exercise>
 	<Exercise name="dumbbell lunge">
 		<MajorMuscles>
@@ -3065,6 +3095,9 @@ STEP 3. Push yourself back up until your arms are straight and elbows unlocked. 
 		<type>
 			dumbbell
 		</type>
+		<video>
+			dumbbell_pushup.mp4
+		</video>
 	</Exercise>
 	<Exercise name="dumbbell reverse curl">
 		<MajorMuscles>
@@ -3190,6 +3223,9 @@ STEP 5. Finally, lower the weights back down until your arms are hanging straigh
 		<type>
 			dumbbell
 		</type>
+		<video>
+			row_kickback.mp4
+		</video>
 	</Exercise>
 	<Exercise name="dumbbell shoulder press">
 		<MajorMuscles>
@@ -3424,6 +3460,31 @@ STEP 2. Rotate your wrists until your palms face the ceiling, then rotate them b
 			dumbbell_wrist_twist.mp4
 		</video>
 	</Exercise>
+	<Exercise name="elevated-feet plank">
+		<MajorMuscles>
+			<Muscle name="Rectus Abdominis"/>
+		</MajorMuscles>
+		<SecondaryMuscles>
+			<Muscle name="Obliques"/>
+		</SecondaryMuscles>
+		<description>
+			STEP 1. This exercise makes the traditional plank more difficult to perform. Get into the traditional plank position, but place both your feet on a bench, as illustrated.
+
+STEP 2. Brace your core by contracting your abdominal muscles in this position. Hold for roughly 30 seconds, then release.
+		</description>
+		<difficulty>
+			Beginner
+		</difficulty>
+		<image>
+			elevated_feet_plank
+		</image>
+		<target1>
+			abdominals
+		</target1>
+		<type>
+			none
+		</type>
+	</Exercise>
 	<Exercise name="external rotation (no weights)">
 		<MajorMuscles>
 			<Muscle name="Deltoids"/>
@@ -3587,6 +3648,9 @@ STEP 3. Pause, then slowly return to the starting position.
 		<type>
 			dumbbell
 		</type>
+		<video>
+			goblet_squat.mp4
+		</video>
 	</Exercise>
 	<Exercise name="golf squat">
 		<MajorMuscles>
@@ -3619,6 +3683,9 @@ STEP 4. Carefully lower the weight back down in front of you, then squat down an
 		<type>
 			dumbbell
 		</type>
+		<video>
+			golf_squat.mp4
+		</video>
 	</Exercise>
 	<Exercise name="good morning">
 		<MajorMuscles>
@@ -3906,8 +3973,11 @@ STEP 5. Repeat.
 			chest
 		</target1>
 		<type>
-			barbell
+			dumbbell
 		</type>
+		<video>
+			incline_dumbbell_fly.mp4
+		</video>
 	</Exercise>
 	<Exercise name="incline hammer curl">
 		<MajorMuscles>
@@ -3937,6 +4007,31 @@ STEP 3. Return to starting position. Repeat.
 			incline_hammer_curl.mp4
 		</video>
 	</Exercise>
+	<Exercise name="incline plank">
+		<MajorMuscles>
+			<Muscle name="Rectus Abdominis"/>
+		</MajorMuscles>
+		<SecondaryMuscles>
+			<Muscle name="Obliques"/>
+		</SecondaryMuscles>
+		<description>
+			STEP 1. This exercise makes the traditional plank easier to perform, since you do not have to support as much body weight. Pretend you are about to do pushups off of a bench, but place your forearms on the bench instead. Your elbows should be placed so that your arms and torso form a 90-degree angle between one another.
+
+STEP 2. Brace your core by contracting your abdominal muscles in this position. Hold for roughly 30 seconds, then release.
+		</description>
+		<difficulty>
+			Beginner
+		</difficulty>
+		<image>
+			inclined_plank
+		</image>
+		<target1>
+			abdominals
+		</target1>
+		<type>
+			none
+		</type>
+	</Exercise>
 	<Exercise name="incline pushup">
 		<MajorMuscles>
 			<Muscle name="Pectoralis"/>
@@ -3962,6 +4057,9 @@ STEP 2. Lower your body until your chest nearly touches the bench, pause, then p
 		<type>
 			none
 		</type>
+		<video>
+			incline_pushup.mp4
+		</video>
 	</Exercise>
 	<Exercise name="incline reverse crunch">
 		<MajorMuscles>
@@ -4018,6 +4116,9 @@ STEP 4. Flex your biceps, then slowly lower your arms back down.
 		<type>
 			dumbbell
 		</type>
+		<video>
+			incline_reverse_curl.mp4
+		</video>
 	</Exercise>
 	<Exercise name="incline shoulder rotation">
 		<MajorMuscles>
@@ -4043,6 +4144,9 @@ STEP 3. Without moving your upper arms, rotate your arms and raise the weights f
 		<type>
 			dumbbell
 		</type>
+		<video>
+			incline_shoulder_rotation.mp4
+		</video>
 	</Exercise>
 	<Exercise name="incline y raise">
 		<MajorMuscles>
@@ -4070,6 +4174,9 @@ STEP 3. Pause, then slowly lower back to the starting position.
 		<type>
 			dumbbell
 		</type>
+		<video>
+			incline_y_raise.mp4
+		</video>
 	</Exercise>
 	<Exercise name="jackknife">
 		<MajorMuscles>
@@ -4131,6 +4238,9 @@ STEP 2. Thrust your hips forward pulling the kettlebells straight upward, catchi
 		<type>
 			kettlebell
 		</type>
+		<video>
+			kettlebell_clean.mp4
+		</video>
 	</Exercise>
 	<Exercise name="kettlebell crunch">
 		<MajorMuscles>
@@ -4244,6 +4354,9 @@ STEP 3. Pause, then return to starting position. Repeat.
 		<type>
 			kettlebell
 		</type>
+		<video>
+			kettlebell_high_pull.mp4
+		</video>
 	</Exercise>
 	<Exercise name="kettlebell kickback">
 		<MajorMuscles>
@@ -4356,6 +4469,9 @@ STEP 3. Slowly lower your body back into starting position and repeat.
 		<type>
 			kettlebell
 		</type>
+		<video>
+			kettlebell_pushup.mp4
+		</video>
 	</Exercise>
 	<Exercise name="kettlebell rear delt row">
 		<MajorMuscles>
@@ -4413,6 +4529,9 @@ STEP 3. Lower the kettlebell back to the starting position and repeat with the o
 		<type>
 			kettlebell
 		</type>
+		<video>
+			kettlebell_renegade_row.mp4
+		</video>
 	</Exercise>
 	<Exercise name="kettlebell russian twist">
 		<MajorMuscles>
@@ -4621,6 +4740,31 @@ STEP 3. Return to start position by reversing the motion. Keep your back straigh
 			kettlebells_squat.mp4
 		</video>
 	</Exercise>
+	<Exercise name="kneeling plank">
+		<MajorMuscles>
+			<Muscle name="Rectus Abdominis"/>
+		</MajorMuscles>
+		<SecondaryMuscles>
+			<Muscle name="Obliques"/>
+		</SecondaryMuscles>
+		<description>
+			STEP 1. Start to get into a pushup position, but bend your elbows and rest your weight on your forearms instead of on your hands. Then, bend your knees so that they help support your body - this makes performing the traditional plank exercise easier to perform. Your body should form a straight line from your shoulders to your knees.
+
+STEP 2. Brace your core by contracting your abdominal muscles in this position. Hold for roughly 30 seconds, then release.
+		</description>
+		<difficulty>
+			Beginner
+		</difficulty>
+		<image>
+			kneeling_plank
+		</image>
+		<target1>
+			abdominals
+		</target1>
+		<type>
+			none
+		</type>
+	</Exercise>
 	<Exercise name="kneeling cable crunch">
 		<MajorMuscles>
 			<Muscle name="Rectus Abdominis"/>
@@ -4756,6 +4900,9 @@ STEP 3. Slowly press the weight back up above you. Finish the set, then switch p
 		<type>
 			dumbbell
 		</type>
+		<video>
+			lying_one_arm_extextension.mp4
+		</video>
 	</Exercise>
 	<Exercise name="lying pullover">
 		<MajorMuscles>
@@ -5177,6 +5324,9 @@ STEP 3. Repeat.
 		<type>
 			none
 		</type>
+		<video>
+			modified_pushup.mp4
+		</video>
 	</Exercise>
 	<Exercise name="modified v-sit">
 		<MajorMuscles>
@@ -5410,6 +5560,31 @@ STEP 3. Pause, then push yourslef up the starting position.
 			machine
 		</type>
 	</Exercise>
+	<Exercise name="plank">
+		<MajorMuscles>
+			<Muscle name="Rectus Abdominis"/>
+		</MajorMuscles>
+		<SecondaryMuscles>
+			<Muscle name="Obliques"/>
+		</SecondaryMuscles>
+		<description>
+			STEP 1. Begin by getting into pushup position, but bend your elbows and rest your weight on your forearms instead of using your hands as illustrated. Your body should form a straight line from your shoulders down to your ankles.
+
+STEP 2. Brace your core by contracting your abdominal muscles in this position. Hold for roughly 30 seconds, then release.
+		</description>
+		<difficulty>
+			Beginner
+		</difficulty>
+		<image>
+			plank
+		</image>
+		<target1>
+			abdominals
+		</target1>
+		<type>
+			none
+		</type>
+	</Exercise>
 	<Exercise name="power clean">
 		<MajorMuscles>
 			<Muscle name="Glutes"/>
@@ -5531,6 +5706,9 @@ STEP 5.  Repeat.
 		<type>
 			dumbbell
 		</type>
+		<video>
+			prone_curl.mp4
+		</video>
 	</Exercise>
 	<Exercise name="prone hammer curl">
 		<MajorMuscles>
@@ -5591,6 +5769,9 @@ STEP 5.  Repeat.
 		<type>
 			dumbbell
 		</type>
+		<video>
+			prone_reverse_curl.mp4
+		</video>
 	</Exercise>
 	<Exercise name="pulse up">
 		<MajorMuscles>
@@ -5764,6 +5945,9 @@ STEP 2. Pull the handles straight into your chest by bending your elbows and squ
 		<type>
 			bands
 		</type>
+		<video>
+			resistance_band_close_row.mp4
+		</video>
 	</Exercise>
 	<Exercise name="resistance band crunch">
 		<MajorMuscles>
@@ -5819,6 +6003,9 @@ STEP 3. Pause, then gradually lower to starting position and repeat.
 		<type>
 			bands
 		</type>
+		<video>
+			resistance_band_curl.mp4
+		</video>
 	</Exercise>
 	<Exercise name="resistance band hip raise">
 		<MajorMuscles>
@@ -6332,6 +6519,9 @@ STEP 3. Pause, then slowly lower the weights back to the starting position.
 		<type>
 			dumbbell
 		</type>
+		<video>
+			scaption.mp4
+		</video>
 	</Exercise>
 	<Exercise name="seated bent over row">
 		<MajorMuscles>
@@ -6361,6 +6551,9 @@ STEP 4. Hold for a second, then lower the weights back down.
 		<type>
 			dumbbell
 		</type>
+		<video>
+			seated_bent_over_row.mp4
+		</video>
 	</Exercise>
 	<Exercise name="seated dumbbell shoulder press">
 		<MajorMuscles>
@@ -6393,6 +6586,9 @@ STEP 5.  Slowly lower the weights back down to your shoulders.
 		<type>
 			dumbbell
 		</type>
+		<video>
+			seated_dumbbell_shoulder_press.mp4
+		</video>
 	</Exercise>
 	<Exercise name="seated front raise">
 		<MajorMuscles>
@@ -6694,6 +6890,33 @@ STEP 3. Push through your left heel to return to the starting position, then imm
 			side_lunge.mp4
 		</video>
 	</Exercise>
+	<Exercise name="side plank">
+		<MajorMuscles>
+			<Muscle name="Obliques"/>
+		</MajorMuscles>
+		<SecondaryMuscles>
+			<Muscle name="Rectus Abdominis"/>
+		</SecondaryMuscles>
+		<description>
+			STEP 1. Lie on your left side with your knees straight and prop your upper body up on your left elbow and forearm, as illustrated.
+
+STEP 2. Brace your core by contracting your abs forcefully. Then, slowly raise your hips until your body form a straight line from your ankles down to your shoulders.
+
+STEP 3. Hold for 30 seconds or so, then turn to your right side and repeat.
+		</description>
+		<difficulty>
+			Beginner
+		</difficulty>
+		<image>
+			side_plank
+		</image>
+		<target1>
+			abdominals
+		</target1>
+		<type>
+			none
+		</type>
+	</Exercise>
 	<Exercise name="single-arm external rotation">
 		<MajorMuscles>
 			<Muscle name="Rotator Cuff"/>
@@ -6780,6 +7003,9 @@ STEP 3. Repeat.
 		<type>
 			none
 		</type>
+		<video>
+			single_leg_decline_pushup.mp4
+		</video>
 	</Exercise>
 	<Exercise name="single-leg squat">
 		<MajorMuscles>
@@ -7144,6 +7370,9 @@ STEP 4. Extend the dumbbell back overhead until your left arm is straight and re
 		<type>
 			dumbbell
 		</type>
+		<video>
+			standing_triceps_extension.mp4
+		</video>
 	</Exercise>
 	<Exercise name="standing wrist curl">
 		<MajorMuscles>
@@ -7379,6 +7608,9 @@ STEP 3. Hold for a second, then slowly lower the weights back down.
 		<type>
 			swissball dumbbell
 		</type>
+		<video>
+			swiss_ball_front_raise.mp4
+		</video>
 	</Exercise>
 	<Exercise name="swiss-ball glute bridge">
 		<MajorMuscles>
@@ -7434,6 +7666,9 @@ STEP 3. Without moving your upper arms, slowly extend your arms out behind you u
 		<type>
 			dumbbell swissball
 		</type>
+		<video>
+			swiss_ball_kickback.mp4
+		</video>
 	</Exercise>
 	<Exercise name="swiss-ball leg curl">
 		<MajorMuscles>
@@ -7639,6 +7874,9 @@ STEP 4. Reverse the motion by sweeping your arms forward - keeping them fixed as
 		<type>
 			dumbbell swissball
 		</type>
+		<video>
+			swiss_ball_pullover.mp4
+		</video>
 	</Exercise>
 	<Exercise name="swiss-ball pushup">
 		<MajorMuscles>
@@ -7775,6 +8013,9 @@ STEP 3. Pause for 1-2 seconds, then slowly lower your shoulders down as far as p
 		<type>
 			dumbbell swissball
 		</type>
+		<video>
+			swiss_ball_shrug.mp4
+		</video>
 	</Exercise>
 	<Exercise name="swiss-ball split squat">
 		<MajorMuscles>
@@ -7948,7 +8189,7 @@ STEP 5. Repeat.
 			barbell
 		</type>
 		<video>
-			barbell_squat.mp4
+			t_pushup.mp4
 		</video>
 	</Exercise>
 	<Exercise name="toe touch">
@@ -8361,6 +8602,9 @@ STEP 3. Then, pause for a short time, and return to starting position.
 		<type>
 			none
 		</type>
+		<video>
+			v_up.mp4
+		</video>
 	</Exercise>
 	<Exercise name="walking dumbbell lunge">
 		<MajorMuscles>
@@ -8392,6 +8636,9 @@ STEP 4. Keep lunging forward - alternating between your left and right legs - ac
 		<type>
 			dumbbell
 		</type>
+		<video>
+			walking_lunge.mp4
+		</video>
 	</Exercise>
 	<Exercise name="walking lunge twist">
 		<MajorMuscles>
@@ -8453,6 +8700,9 @@ STEP 3. When the weight reaches the outside of your left ankle, reverse the moti
 		<type>
 			dumbbell
 		</type>
+		<video>
+			weighted_chop.mp4
+		</video>
 	</Exercise>
 	<Exercise name="weighted crunch">
 		<MajorMuscles>
