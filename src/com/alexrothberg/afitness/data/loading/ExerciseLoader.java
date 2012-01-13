@@ -1,17 +1,7 @@
 package com.alexrothberg.afitness.data.loading;
 
 import java.io.IOException;
-import java.io.InputStream;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -116,101 +106,101 @@ public class ExerciseLoader {
 		DbAdapter.DatabaseHelper.setImage(exerciseId, image, mDb);
 	}
 
-	public void load(){
-		try {
-			
-			InputStream is = context.getAssets().open("exercises.xml");
-			
-	        DocumentBuilder builder=DocumentBuilderFactory
-            .newInstance()
-            .newDocumentBuilder();
-	        
-	        Document doc=builder.parse(is, null);
-	        is.close();
-	        
-	        final Node root = doc.getDocumentElement();
-	        
-	        mDb.beginTransaction();
-	        doProcessExercisesXML(root);
-	        mDb.setTransactionSuccessful();
-	        
-		} catch (IOException e) {
-			Log.e(TAG, "exercises.xml parse: IOException", e);
-		} catch (SAXException e) {
-			Log.e(TAG, "exercises.xml parse: SAXException", e);
-		} catch (ParserConfigurationException e) {
-			Log.e(TAG, "exercises.xml parse: ParserConfigurationException", e);
-		} catch (FactoryConfigurationError e) {
-			Log.e(TAG, "exercises.xml parse: FactoryConfigurationError", e);
-		} catch (Exception e) {
-			Log.e(TAG, "exercises.xml parse: Exception", e);			
-		}finally{
-			mDb.endTransaction();
-		}
-	}
+//	public void load(){
+//		try {
+//			
+//			InputStream is = context.getAssets().open("exercises.xml");
+//			
+//	        DocumentBuilder builder=DocumentBuilderFactory
+//            .newInstance()
+//            .newDocumentBuilder();
+//	        
+//	        Document doc=builder.parse(is, null);
+//	        is.close();
+//	        
+//	        final Node root = doc.getDocumentElement();
+//	        
+//	        mDb.beginTransaction();
+//	        doProcessExercisesXML(root);
+//	        mDb.setTransactionSuccessful();
+//	        
+//		} catch (IOException e) {
+//			Log.e(TAG, "exercises.xml parse: IOException", e);
+//		} catch (SAXException e) {
+//			Log.e(TAG, "exercises.xml parse: SAXException", e);
+//		} catch (ParserConfigurationException e) {
+//			Log.e(TAG, "exercises.xml parse: ParserConfigurationException", e);
+//		} catch (FactoryConfigurationError e) {
+//			Log.e(TAG, "exercises.xml parse: FactoryConfigurationError", e);
+//		} catch (Exception e) {
+//			Log.e(TAG, "exercises.xml parse: Exception", e);			
+//		}finally{
+//			mDb.endTransaction();
+//		}
+//	}
 	
-	private void doProcessExercisesXML(Node root) throws Exception {
-		final NodeList exercises = root.getChildNodes();
-		for(int i=0; i<exercises.getLength();i++){
-			final Node exercise_node = exercises.item(i);
-			if(exercise_node.getNodeType() == Node.ELEMENT_NODE){	        		
-				doProcessExercise(exercise_node);
-			}	        	
-		}
-	}
+//	private void doProcessExercisesXML(Node root) throws Exception {
+//		final NodeList exercises = root.getChildNodes();
+//		for(int i=0; i<exercises.getLength();i++){
+//			final Node exercise_node = exercises.item(i);
+//			if(exercise_node.getNodeType() == Node.ELEMENT_NODE){	        		
+//				doProcessExercise(exercise_node);
+//			}	        	
+//		}
+//	}
 
-	private void doProcessExercise(Node exercise_node) throws Exception {
-		assert(exercise_node.getNodeName().equals("Exercise"));
-
-		final String exercise_name = exercise_node.getAttributes().getNamedItem("name").getNodeValue();
-		final long exercise_id = DbAdapter.DatabaseHelper.createExercise(exercise_name, mDb);
-		
-		Log.v(TAG, "exercise: " + exercise_name +  "(" +exercise_id  +")");
-		
-		
-		final NodeList children = exercise_node.getChildNodes();
-        for(int i=0; i<children.getLength();i++){
-        	final Node child_node = children.item(i);
-        	if(child_node.getNodeType() == Node.ELEMENT_NODE){
-        		if(child_node.getNodeName().equals("MajorMuscles")){
-        			doProcessMajorMuscles(child_node, exercise_id);
-        		}else if(child_node.getNodeName().equals("SecondaryMuscles")){
-        			doProcessSecondaryMuscles(child_node, exercise_id);
-        		}else{
-        			//throw new Exception("Unkown Exercise paramter: " + child_node.getNodeName());
-        		}
-        	}	        	
-        }
-	}
+//	private void doProcessExercise(Node exercise_node) throws Exception {
+//		assert(exercise_node.getNodeName().equals("Exercise"));
+//
+//		final String exercise_name = exercise_node.getAttributes().getNamedItem("name").getNodeValue();
+//		final long exercise_id = DbAdapter.DatabaseHelper.createExercise(exercise_name, mDb);
+//		
+//		Log.v(TAG, "exercise: " + exercise_name +  "(" +exercise_id  +")");
+//		
+//		
+//		final NodeList children = exercise_node.getChildNodes();
+//        for(int i=0; i<children.getLength();i++){
+//        	final Node child_node = children.item(i);
+//        	if(child_node.getNodeType() == Node.ELEMENT_NODE){
+//        		if(child_node.getNodeName().equals("MajorMuscles")){
+//        			doProcessMajorMuscles(child_node, exercise_id);
+//        		}else if(child_node.getNodeName().equals("SecondaryMuscles")){
+//        			doProcessSecondaryMuscles(child_node, exercise_id);
+//        		}else{
+//        			//throw new Exception("Unkown Exercise paramter: " + child_node.getNodeName());
+//        		}
+//        	}	        	
+//        }
+//	}
 	
-	private void doProcessSecondaryMuscles(Node muscles_node, long exercise_id) {
-		doProcessMuscles(muscles_node, exercise_id, false);
-	}
-
-	private void doProcessMajorMuscles(Node muscles_node, long exercise_id) {
-		doProcessMuscles(muscles_node, exercise_id, true);		
-	}
+//	private void doProcessSecondaryMuscles(Node muscles_node, long exercise_id) {
+//		doProcessMuscles(muscles_node, exercise_id, false);
+//	}
+//
+//	private void doProcessMajorMuscles(Node muscles_node, long exercise_id) {
+//		doProcessMuscles(muscles_node, exercise_id, true);		
+//	}
 	
-	private void doProcessMuscles(Node muscles_node, long exercise_id, boolean primary) {
-		final NodeList children = muscles_node.getChildNodes();
-        for(int i=0; i<children.getLength();i++){
-        	final Node muscle_node = children.item(i);
-        	if(muscle_node.getNodeType() == Node.ELEMENT_NODE){        		
-        		doProcessMuscle(muscle_node, exercise_id, primary);
-        	}
-        }
-		
-	}
+//	private void doProcessMuscles(Node muscles_node, long exercise_id, boolean primary) {
+//		final NodeList children = muscles_node.getChildNodes();
+//        for(int i=0; i<children.getLength();i++){
+//        	final Node muscle_node = children.item(i);
+//        	if(muscle_node.getNodeType() == Node.ELEMENT_NODE){        		
+//        		doProcessMuscle(muscle_node, exercise_id, primary);
+//        	}
+//        }
+//		
+//	}
 
 
-	private void doProcessMuscle(Node muscle_node, long exercise_id,
-			boolean primary) {
-		assert(muscle_node.getNodeName().equals("Muscle"));
-		String muscle_name = muscle_node.getAttributes().getNamedItem("name").getNodeValue();
-		
-		recordMuscle(exercise_id, primary, muscle_name);
-		
-	}
+//	private void doProcessMuscle(Node muscle_node, long exercise_id,
+//			boolean primary) {
+//		assert(muscle_node.getNodeName().equals("Muscle"));
+//		String muscle_name = muscle_node.getAttributes().getNamedItem("name").getNodeValue();
+//		
+//		recordMuscle(exercise_id, primary, muscle_name);
+//		
+//	}
 
 	private void recordMuscle(final long exercise_id, final boolean primary, final String muscle_name) {
 		final long muscle_id = DbAdapter.DatabaseHelper.getMuscleFromName(muscle_name, this.mDb);

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -174,7 +175,7 @@ public class DbAdapter {
 	}
 
     public static final String DATABASE_NAME = "data";
-    public static final int DATABASE_VERSION = 41;
+    public static final int DATABASE_VERSION = 42;
     
     private static final String TAG = "DbAdapter";
     
@@ -184,8 +185,10 @@ public class DbAdapter {
     
     
 	public static class DatabaseHelper extends SQLiteOpenHelper {
-		protected Context context;
-		private static ContentValues values  = new ContentValues();
+		protected final Context context;
+		
+		private final static ContentValues values  = new ContentValues();
+		
 		public DatabaseHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
 			this.context=context;
@@ -193,9 +196,12 @@ public class DbAdapter {
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
+//			ProgressDialog dialog = ProgressDialog.show(context, "", 
+//                    "First time app used. Loading data. Please wait...", true);
 			createAllTables(db);
 			
             loadInitialValues(db);
+//            dialog.dismiss();
 		}
 
 		private void loadInitialValues(SQLiteDatabase db) {
@@ -213,7 +219,7 @@ public class DbAdapter {
 			db.execSQL(Exercises.DATABASE_CREATE);
 			db.execSQL(Equipments.DATABASE_CREATE);
 			db.execSQL(Muscles.DATABASE_CREATE);
-			db.execSQL(ExerciseMuscleGroups.DATABASE_CREATE);			
+			db.execSQL(ExerciseMuscleGroups.DATABASE_CREATE);
 			db.execSQL(ExerciseMuscles.DATABASE_CREATE);
             db.execSQL(Workouts.DATABASE_CREATE);
 			db.execSQL(WorkoutExercises.DATABASE_CREATE);
@@ -223,9 +229,12 @@ public class DbAdapter {
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-                    + newVersion + ", which will destroy all old data");
+                    + newVersion);
             
-            if(oldVersion >= 15 && oldVersion <= 40){
+//			ProgressDialog dialog = ProgressDialog.show(context, "", 
+//                    "Upgrading databases. Please wait...", true);
+            
+            if(oldVersion >= 15 && oldVersion <= 41){
             	if(oldVersion<=31){
             		db.execSQL(Exercises.DATABSE_ADD_IMAGE);
             	}
@@ -234,7 +243,7 @@ public class DbAdapter {
             	throw new RuntimeException("Bad versions!");
 //            	drop(db);
             }         
-            
+//            dialog.dismiss();
             			
 		}
 		
@@ -351,7 +360,7 @@ public class DbAdapter {
 	    public static int setImage(long exercise_id, String image, SQLiteDatabase db){
 	    	values.clear();
 	    	values.put(Exercises.KEY_IMAGE, image);
-	    	return db.update(Exercises.DATABASE_TABLE, values, Exercises._ID+"=?", new String[]{ Long.toString(exercise_id)});
+	    	return db.update(Exercises.DATABASE_TABLE, values, Exercises._ID+"=?", new String[]{ Long.toString(exercise_id) });
 	    }
 	    
 	    
