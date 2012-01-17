@@ -18,6 +18,7 @@ import android.widget.SimpleCursorAdapter;
 
 import com.alexrothberg.afitness.DbAdapter.MuscleGroups;
 import com.alexrothberg.afitness.DbAdapter.Muscles;
+import com.alexrothberg.afitness.DbAdapter.OpenHandler;
 
 public class MuscleChooser extends ListActivity {
 	private static final String TAG = "ExerciseMuscleChooser";
@@ -36,13 +37,20 @@ public class MuscleChooser extends ListActivity {
 		super.onCreate(savedInstanceState);
 		
 		requestCode = getIntent().getIntExtra(MuscleGroupChooser.REQUEST_CODE_ID, MuscleGroupChooser.REQUEST_CODE_NONE);
+		extras = getIntent().getExtras();
 
 		
 		adapter = new DbAdapter(this);
-		adapter.open();
-		
-		extras = getIntent().getExtras();
-		
+		adapter.open(new OpenHandler() {
+			
+			@Override
+			public void onSuccess() {
+				populateList();
+			}
+		});
+	}
+
+	private void populateList() {
 		Cursor muscles = null;
 		
 		if (extras != null){

@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import com.alexrothberg.afitness.DbAdapter.MuscleGroups;
+import com.alexrothberg.afitness.DbAdapter.OpenHandler;
 
 public class MuscleGroupChooser extends ListActivity{
 	private static final String TAG = "MuscleGroupChooser";
@@ -40,10 +41,16 @@ public class MuscleGroupChooser extends ListActivity{
 		setTitle("Muscle Groups");
 		
 		adapter = new DbAdapter(this);
-		adapter.open();
+		adapter.open(new OpenHandler() {
+			
+			@Override
+			public void onSuccess() {
+				populateList();
+			}
+		});
+	}
 
-
-		
+	private void populateList() {
 		Cursor muscleGroups = adapter.fetchAllMuscleGroups();
 		MatrixCursor extras = new MatrixCursor(new String[]{MuscleGroups._ID, MuscleGroups.KEY_NAME});
 		

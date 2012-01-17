@@ -12,6 +12,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.os.AsyncTask;
 import android.provider.BaseColumns;
 import android.util.Log;
 
@@ -611,10 +612,42 @@ public class DbAdapter {
      *         initialization call)
      * @throws SQLException if the database could be neither opened or created
      */
-    public DbAdapter open() throws SQLException {
+    public void open() throws SQLException {
         mDbHelper = new DatabaseHelper(mCtx);
         mDb = mDbHelper.getWritableDatabase();
-        return this;
+    }
+    
+    public interface OpenHandler{
+    	void onSuccess();
+//    	void onFailure(SQLException exception);
+    }
+    
+    public void open(final OpenHandler handler){
+    	mDbHelper = new DatabaseHelper(mCtx);
+    	
+    	new AsyncTask<Void, Void, SQLiteDatabase>(){
+    		
+    		private ProgressDialog dialog;
+
+			@Override
+    		protected void onPreExecute() {
+    			dialog = ProgressDialog.show(mCtx, "Loading", "Loading data", true);
+    		}
+
+			@Override
+			protected SQLiteDatabase doInBackground(Void... params) {
+				return mDbHelper.getWritableDatabase();
+			}
+			
+			@Override
+			protected void onPostExecute(SQLiteDatabase result) {
+				dialog.dismiss();
+				mDb =  result;
+				handler.onSuccess();
+			}
+    		
+    	}.execute();
+    	
     }
     
     public void close() {

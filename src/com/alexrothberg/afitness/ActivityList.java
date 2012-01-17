@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.alexrothberg.afitness.DbAdapter.Exercises;
 import com.alexrothberg.afitness.DbAdapter.MuscleGroups;
 import com.alexrothberg.afitness.DbAdapter.Muscles;
+import com.alexrothberg.afitness.DbAdapter.OpenHandler;
 
 public class ActivityList extends ListActivity {
 	private String muscleGroup;
@@ -49,11 +50,12 @@ public class ActivityList extends ListActivity {
 		
 		TextView empty = new TextView(this);
 		empty.setText( "No Exercises");
-		getListView().setEmptyView(empty);
 		
-		adapter = new DbAdapter(this);
-		adapter.open();
-		
+		ListView lv = getListView();
+		lv.setEmptyView(empty);
+		//lv.setTextFilterEnabled(true);
+		lv.setFastScrollEnabled(true);
+
 		Bundle extras = getIntent().getExtras();
 		if (extras != null){
 			muscleGroupId = extras.getLong(MuscleGroupChooser.MUSCLE_GROUP_PREFIX + MuscleGroups._ID);
@@ -61,16 +63,17 @@ public class ActivityList extends ListActivity {
 			muscleName = extras.getString(MuscleChooser.MUSCLE_PREFIX + Muscles.KEY_NAME);
 			muscleId = extras.getLong(MuscleChooser.MUSCLE_PREFIX + Muscles._ID);
 		}
-		registerForContextMenu(getListView());
-
-		populateList();
-		ListView lv = getListView();
-		//lv.setTextFilterEnabled(true);
-		lv.setFastScrollEnabled(true);		
-
+		registerForContextMenu(lv);
+		
+		adapter = new DbAdapter(this);
+		adapter.open(new OpenHandler() {
+			
+			@Override
+			public void onSuccess() {
+				populateList();
+			}
+		});
 	}
-
-
 
 	private void populateList() {
 		if(muscleId > 0){
@@ -100,10 +103,7 @@ public class ActivityList extends ListActivity {
 		super.onListItemClick(l, v, position, id);
 		
 		viewExercise(position, id);
-		
 	}
-
-
 
 	private void viewExercise(int position, long id) {
 		Intent intent = new Intent(this, RecordExercise.class);
