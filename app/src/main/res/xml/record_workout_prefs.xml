@@ -6,4 +6,5 @@
 	<CheckBoxPreference android:key="show_notes" android:title="Show Notes" android:defaultValue="false" />
 	<ListPreference android:key="set_rest_time" android:entries="@array/set_rests" android:entryValues="@array/set_rests" android:title="Set Rest Time"
 		android:defaultValue="60" />	
+	<CheckBoxPreference android:key="notify_pebble" android:title="Notify Pebble" android:defaultValue="false" />		
 </PreferenceScreen>

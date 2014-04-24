@@ -4,7 +4,12 @@ package com.alexrothberg.afitness;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -261,6 +266,26 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 		return RecordExercisePrefActivity.getSetRestTime(this);
 	}
 	
+	private boolean notifyPebble(){
+		return RecordExercisePrefActivity.getNotifyPebble(this);
+	}
+	
+	public void sendAlertToPebble(String title, String body) {
+	    final Intent i = new Intent("com.getpebble.action.SEND_NOTIFICATION");
+
+	    final Map<String, String> data = new HashMap<String, String>();
+	    data.put("title", title);
+	    data.put("body", body);
+	    final JSONObject jsonData = new JSONObject(data);
+	    final String notificationData = new JSONArray().put(jsonData).toString();
+
+	    i.putExtra("messageType", "PEBBLE_ALERT");
+	    i.putExtra("sender", "aFitness");
+	    i.putExtra("notificationData", notificationData);
+
+	    sendBroadcast(i);
+	}
+	
 
 	private void onTimerClick() {
 		final RecordExercise that = this;
@@ -275,6 +300,10 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 				
 				@Override
 				public void onFinish() {
+					if(notifyPebble()){
+						sendAlertToPebble("Rest Complete", that.exercise_name);
+					}
+					
 					timer = null;
 //					Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 //					vibrator.vibrate(2000);
