@@ -12,6 +12,9 @@ public class RecordExercisePrefActivity extends PreferenceActivity {
 	private static final long SET_REST_TIME_DEFAULT = 60L;
 	private static final String SET_REST_TIMER_KEY = "set_rest_time";
 	
+	private static final String SHOW_PEBBLE_KEY = "notify_pebble";	
+	private static final boolean SHOW_PEBBLE_DEFAULT = false;	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -20,6 +23,10 @@ public class RecordExercisePrefActivity extends PreferenceActivity {
 	
 	public static boolean getShowNotes(Context context){
 		return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(SHOW_NOTES_KEY, SHOW_NOTES_DEFAULT);
+	}
+	
+	public static boolean getNotifyPebble(Context context){
+		return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(SHOW_PEBBLE_KEY, SHOW_PEBBLE_DEFAULT);
 	}
 	
 	public static long getSetRestTime(Context context){
