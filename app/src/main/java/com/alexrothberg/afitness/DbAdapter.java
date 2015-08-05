@@ -1,10 +1,12 @@
 package com.alexrothberg.afitness;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import android.app.ProgressDialog;
+import android.app.backup.BackupManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -29,7 +31,7 @@ public class DbAdapter {
 		public static final String DATABASE_TABLE = "muscle_groups";
 		
 		public static final String KEY_NAME = "name";
-		
+
 	    public static final String DATABASE_CREATE = String.format(
 	    		"create table %s ("+
             		"%s integer primary key autoincrement, "+
@@ -182,8 +184,8 @@ public class DbAdapter {
     
     private DatabaseHelper mDbHelper;
     private final Context mCtx;
-    private SQLiteDatabase mDb; 
-    
+    private SQLiteDatabase mDb;
+	private BackupManager backupManager;
     
 	public static class DatabaseHelper extends SQLiteOpenHelper {
 		protected final Context context;
@@ -601,7 +603,8 @@ public class DbAdapter {
      */
     public DbAdapter(Context ctx) {
         this.mCtx = ctx;
-    }
+		this.backupManager = new BackupManager(ctx);
+	}
 
 	/**
      * Open the notes database. If it cannot be opened, try to create a new
@@ -706,7 +709,11 @@ public class DbAdapter {
         initialValues.put(Activities.KEY_WEIGHT, weight);
         initialValues.put(Activities.KEY_RECORD_DATE, record_date.getTime());
         initialValues.put(Activities.KEY_UNITS, units.ordinal());
-        return mDb.insert(Activities.DATABASE_TABLE, null, initialValues);
+		long ret = mDb.insert(Activities.DATABASE_TABLE, null, initialValues);
+
+		backupManager.dataChanged();
+
+		return ret;
     }
     
     public Cursor fetchExercisesForWorkout(long workout_id){
