@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<color name="red">#ff0000</color>
+<color name="green">#00ff00</color>
+<color name="blue">#0000ff</color>
+<color name="dragndrop_background">#e0103010</color>
+
+<!-- height of a normal list item in edit playlist mode -->
+<dimen name="normal_height">64dip</dimen>
+<!-- height of an expanded list item in edit playlist mode -->
+<dimen name="expanded_height">128dip</dimen>
+
+</resources>

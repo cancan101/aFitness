@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MuscleGroups>
+	<MusclesGroup name="Chest">
+		<Muscle name="Pectoralis" />
+	</MusclesGroup>
+	<MusclesGroup name="Arms">
+		<Muscle name="Biceps brachii" />
+		<Muscle name="Brachialis" />
+		<Muscle name="Triceps brachii" />
+		<Muscle name="Wrist Extensors" />
+		<Muscle name="Wrist Flexors" />
+	</MusclesGroup>
+	<MusclesGroup name="Back">
+		<Muscle name="Trapezius" />
+		<Muscle name="Latissimus dorsi" />
+		<Muscle name="Lower Back" />
+	</MusclesGroup>
+	<MusclesGroup name="Abdominals">
+		<Muscle name="Obliques" />
+		<Muscle name="Rectus Abdominis" />
+	</MusclesGroup>
+	<MusclesGroup name="Legs">
+		<Muscle name="Gastrocnemius" />
+		<Muscle name="Glutes" />
+		<Muscle name="Hamstrings" />
+		<Muscle name="Soleus" />
+		<Muscle name="Quadriceps" />
+	</MusclesGroup>
+	<MusclesGroup name="Shoulders">
+		<Muscle name="Deltoids" />
+		<Muscle name="Infraspinatus" />
+		<Muscle name="Rotator Cuff" />
+	</MusclesGroup>
+</MuscleGroups>

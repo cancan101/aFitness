@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.alexrothberg.afitness" android:versionName="1.1" android:versionCode="2">
+	<uses-permission android:name="android.permission.VIBRATE" />
+	
+	<uses-sdk android:minSdkVersion="5" />
+	
+	<application android:icon="@drawable/icon" android:label="@string/app_name">
+
+		<activity android:name=".ActivityList"></activity>
+		<activity android:name=".MuscleChooser"></activity>
+
+		<activity android:name=".MyWorkouts" android:theme="@android:style/Theme.NoTitleBar"></activity>
+		<activity android:name=".EditWorkout" android:theme="@android:style/Theme.Dialog"></activity>
+		<activity android:name=".CreateExercise" android:theme="@android:style/Theme.Dialog"></activity>
+
+		<activity android:name=".WorkoutExercisesList"></activity>
+		<activity android:name=".MuscleGroupChooser" android:theme="@android:style/Theme.NoTitleBar"></activity>
+
+		<activity android:name=".MainUI" android:theme="@android:style/Theme.NoTitleBar">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		<activity android:name=".RecordExercise"></activity>
+		<activity android:name=".ExerciseHistory"></activity>
+		<activity android:name=".DebugActivity"></activity>
+		<activity android:name=".LogActivity"></activity>
+		<activity android:name=".RecordExercisePrefActivity" />
+		<!--<service android:name=".RestTimerService"></service>-->
+	</application>
+</manifest> 
