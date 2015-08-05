@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 8
+    compileSdkVersion 15
     buildToolsVersion "22.0.1"
 
     defaultConfig {
         applicationId "com.alexrothberg.afitness"
-        minSdkVersion 8
-        targetSdkVersion 8
+        minSdkVersion 15
+        targetSdkVersion 15
     }
 
     buildTypes {

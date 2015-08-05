@@ -305,18 +305,20 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 					}
 					
 					timer = null;
-//					Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-//					vibrator.vibrate(2000);
 					
 					final NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-					
-					final Notification notification = new Notification(android.R.drawable.stat_notify_sync_noanim, "Rest Complete", System.currentTimeMillis());
 
-					notification.setLatestEventInfo(getApplicationContext(), "Rest After Exercise Complete", "Select to return to " + that.exercise_name, contentIntent);
-					
-					notification.defaults |= Notification.DEFAULT_SOUND;
-					notification.defaults |= Notification.DEFAULT_VIBRATE;
-					notification.flags |= Notification.FLAG_AUTO_CANCEL;
+					final Notification notification = new Notification.Builder(getApplicationContext())
+							.setTicker("Rest Complete")
+							.setContentTitle("Rest After Exercise Complete")
+							.setContentText("Select to return to " + that.exercise_name)
+							.setWhen(System.currentTimeMillis())
+							.setSmallIcon(android.R.drawable.stat_notify_sync_noanim)
+							.setContentIntent(contentIntent)
+							.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE)
+							.setAutoCancel(true)
+							.getNotification();
+
 					mNotificationManager.cancel(1);
 					mNotificationManager.notify(1, notification);
 					resetTimer();
