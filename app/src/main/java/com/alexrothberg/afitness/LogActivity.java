@@ -31,7 +31,7 @@ public class LogActivity extends ListActivity {
 	private Cursor allWorkoutDates, allEercises;
 	
 	private static final String TAG = "LogActivity";
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -49,17 +49,9 @@ public class LogActivity extends ListActivity {
 	}
 
 	private void showDates() {
-		if(allWorkoutDates != null){
-			allWorkoutDates.close();
-		}
-
-		if(allEercises != null){
-			allEercises.close();
-		}
-		
 		allWorkoutDates = adapter.getAllWorkoutDates();
 		startManagingCursor(allWorkoutDates);
-		setListAdapter(new WorkoutDateSummary(this,  R.layout.workout_summary_list_item , allWorkoutDates, new String[]{ BaseColumns._ID, "exercise_count", "activity_count" }, new int[]{ R.id.workout_summary_date_txt, R.id.workout_summary_exercises_txt, R.id.workout_summary_activities_txt} ));
+		setListAdapter(new WorkoutDateSummary(this, R.layout.workout_summary_list_item, allWorkoutDates, new String[]{ BaseColumns._ID, "exercise_count", "activity_count" }, new int[]{ R.id.workout_summary_date_txt, R.id.workout_summary_exercises_txt, R.id.workout_summary_activities_txt} ));
 	}
 	
 	@Override
@@ -103,17 +95,9 @@ public class LogActivity extends ListActivity {
 	}
 
 	private void showExercises() {
-		if(allWorkoutDates != null){
-			allWorkoutDates.close();
-		}
-
-		if(allEercises != null){
-			allEercises.close();
-		}
-		
 		allEercises = adapter.getAlExerciseOn(selected_date_long);
 		startManagingCursor(allEercises);
-		setListAdapter(new SimpleCursorAdapter(this,  R.layout.workout_summary_exercises_list_item , allEercises, new String[]{ Exercises.KEY_NAME, "activity_count" }, new int[]{ R.id.workout_summary_exercises_name_txt, R.id.workout_summary_exercises_activities_txt} ));
+		setListAdapter(new SimpleCursorAdapter(this, R.layout.workout_summary_exercises_list_item, allEercises, new String[]{ Exercises.KEY_NAME, "activity_count" }, new int[]{ R.id.workout_summary_exercises_name_txt, R.id.workout_summary_exercises_activities_txt} ));
 	}
 	
 	@Override
