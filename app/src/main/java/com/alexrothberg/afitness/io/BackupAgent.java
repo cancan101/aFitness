@@ -18,7 +18,7 @@ public class BackupAgent extends BackupAgentHelper {
     private static final String DATA_BACKUP_KEY = "data";
     private static final String DATA_DB = DbAdapter.DATABASE_NAME;
 
-    private Object fileLock = new Object();
+    private static final Object fileLock = new Object();
 
     @Override
     public void onCreate() {
@@ -32,7 +32,7 @@ public class BackupAgent extends BackupAgentHelper {
                          ParcelFileDescriptor newState) throws IOException {
         Log.d(TAG, "onBackup");
 
-        synchronized (fileLock) {
+        synchronized (BackupAgent.fileLock) {
             super.onBackup(oldState, data, newState);
         }
     }
@@ -42,7 +42,7 @@ public class BackupAgent extends BackupAgentHelper {
             throws IOException {
         Log.d(TAG, "onRestore appVersionCode = " + appVersionCode);
 
-        synchronized (fileLock) {
+        synchronized (BackupAgent.fileLock) {
             Log.d(TAG, "onRestore in-lock");
             super.onRestore(data, appVersionCode, newState);
         }
