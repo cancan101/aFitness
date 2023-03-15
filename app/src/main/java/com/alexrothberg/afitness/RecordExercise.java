@@ -426,7 +426,10 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 	@Override
 	public void onDateSet(DatePicker view, int year, int monthOfYear,
 			int dayOfMonth) {
+		setDate(year, monthOfYear, dayOfMonth);
+	}
 
+	private void setDate(int year, int monthOfYear, int dayOfMonth) {
 		if(mYear != year || mDay != dayOfMonth || mMonth != monthOfYear){
 			mYear = year;
 			mDay = dayOfMonth;
@@ -479,6 +482,14 @@ public class RecordExercise extends ListActivity implements OnClickListener, OnD
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()){
+			case R.id.record_excercise_menu_change_date_today:
+				Calendar today = Calendar.getInstance();
+				int mYear = today.get(Calendar.YEAR);
+				int mMonth = today.get(Calendar.MONTH);
+				int mDay = today.get(Calendar.DAY_OF_MONTH);
+
+				setDate(mYear, mMonth, mDay);
+				return true;
 			case R.id.record_excercise_menu_change_date:
 				changeDate();
 				return true;
